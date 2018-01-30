@@ -292,7 +292,7 @@ export class LineChart extends React.Component {
     }
     LineChart.defaultProps = {
     
-            width: 800,
+            width: 2000,
             height: 300,
             chartId: 'v1_chart'
      

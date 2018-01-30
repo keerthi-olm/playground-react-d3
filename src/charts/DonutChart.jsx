@@ -20,6 +20,7 @@ var DonutChartPath=React.createClass({
         this.transform='translate('+radius/2+','+radius/2+')';
 
     },
+    
     createChart:function(_self){
 
         var paths = (this.props.pie(this.props.data)).map(function(d, i) {

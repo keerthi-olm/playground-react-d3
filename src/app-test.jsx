@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import LineChart from './charts/LineChart'
+import DialChart from './charts/DialChart'
 
 
 class App extends Component {
@@ -10,6 +11,7 @@ class App extends Component {
                <div className="pure-u-1">
                 <div className="bottom-right-svg">
                     <LineChart/>
+                    <DialChart/>
                 </div>
             </div>
             </div>
