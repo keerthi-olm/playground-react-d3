@@ -5,6 +5,7 @@ import * as d3 from "d3";
 
 // Based on http://bl.ocks.org/msqr/3202712
 // another good example https://swizec.com/blog/how-to-make-a-piechart-using-react-and-d3/swizec/6785
+// very good library ----> https://bl.ocks.org/d3indepth
 
 
 
@@ -20,26 +21,32 @@ constructor(props) {
     this.pointerHeadLength = Math.round(this.r * props.pointerHeadLengthPercent);
 
     // a linear scale that maps domain values to a percent from 0..1
-    this.scale = d3.scale.linear()
-      .range([0,1])
-      .domain([props.minValue, props.maxValue]);
+    // this.scale = d3.scale.linear()
+    //   .range([0,1])
+    //   .domain([props.minValue, props.maxValue]);
       
-    this.ticks = this.scale.ticks(props.majorTicks);
-    this.tickData = d3.range(props.majorTicks).map(function() {return 1/props.majorTicks;});
-    
-    this.arc = d3.svg.arc()
-      .innerRadius(this.r - props.ringWidth - props.ringInset)
-      .outerRadius(this.r - props.ringInset)
-      .startAngle(function(d, i) {
-        var ratio = d * i;
-        let deg =props.minAngle + (this.ratio * this.range)
-        return deg => deg * Math.PI / 180;
-      })
-      .endAngle(function(d, i) {
-        var ratio = d * (i+1);
-        let deg =props.minAngle + (this.ratio * this.range)
-        return deg => deg * Math.PI / 180;
-      });
+    // this.ticks = this.scale.ticks(props.majorTicks);
+    // this.tickData = d3.range(props.majorTicks).map(function() {return 1/props.majorTicks;});
+    this.pieGenerator = d3.pie().startAngle(-0.5 * Math.PI).endAngle(0.5 * Math.PI);
+
+    this.arcGenerator = d3.arc().innerRadius(20).outerRadius(100);
+
+
+    // this.arc = d3.svg.arc()
+    //   .innerRadius(this.r - props.ringWidth - props.ringInset)
+    //   .outerRadius(this.r - props.ringInset)
+    //   .startAngle(function(d, i) {
+    //     var ratio = d * i;
+    //     let deg =props.minAngle + (this.ratio * this.range)
+    //     return deg => deg * Math.PI / 180;
+    //   })
+    //   .endAngle(function(d, i) {
+    //     var ratio = d * (i+1);
+    //     let deg =props.minAngle + (this.ratio * this.range)
+    //     return deg => deg * Math.PI / 180;
+    //   });
+    var data = [10, 40, 30, 20, 60, 80]
+   this.arcData = this.pieGenerator(data);
 
  }
   deg2rad(deg) {
@@ -47,54 +54,61 @@ constructor(props) {
   }
   
   newAngle(d) {
-    var ratio = scale(d);
-    var newAngle = this.props.minAngle + (ratio * range);
+    var ratio = this.scale(d);
+    var newAngle = this.props.minAngle + (this.ratio * this.range);
     return newAngle;
   }
   renderAnother() {
-    var svg = d3.select(container)
-      .append('svg:svg')
-        .attr('class', 'gauge')
-        .attr('width', this.props.clipWidth)
-        .attr('height', this.props.clipHeight);
+    // var svg = d3.select(container)
+    //   .append('svg:svg')
+    //     .attr('class', 'gauge')
+    //     .attr('width', this.props.clipWidth)
+    //     .attr('height', this.props.clipHeight);
     
-    var centerTx = 'translate('+r +','+ r +')';
+    // var centerTx = 'translate('+this.r +','+ this.r +')';
     
-    var arcs = svg.append('g')
-        .attr('class', 'arc')
-        .attr('transform', centerTx);
+    // var arcs = svg.append('g')
+    //     .attr('class', 'arc')
+    //     .attr('transform', centerTx);
     
-    arcs.selectAll('path')
-        .data(tickData)
-      .enter().append('path')
-        .attr('fill', function(d, i) {
-          return this.props.arcColorFn(d * i);
-        })
-        .attr('d', arc);
+    // arcs.selectAll('path')
+    //     .data(tickData)
+    //   .enter().append('path')
+    //     .attr('fill', function(d, i) {
+    //       return this.props.arcColorFn(d * i);
+    //     })
+    //     .attr('d', arc);
     
-    var lg = svg.append('g')
-        .attr('class', 'label')
-        .attr('transform', centerTx);
-    lg.selectAll('text')
-        .data(ticks)
-      .enter().append('text')
-        .attr('transform', function(d) {
-          var ratio = scale(d);
-          var newAngle = this.props.minAngle + (ratio * range);
-          return 'rotate(' +newAngle +') translate(0,' +(this.props.labelInset - r) +')';
-        })
-        .text(this.props.labelFormat);
+    // var lg = svg.append('g')
+    //     .attr('class', 'label')
+    //     .attr('transform', centerTx);
+    // lg.selectAll('text')
+    //     .data(ticks)
+    //   .enter().append('text')
+    //     .attr('transform', function(d) {
+    //       var ratio = scale(d);
+    //       var newAngle = this.props.minAngle + (ratio * range);
+    //       return 'rotate(' +newAngle +') translate(0,' +(this.props.labelInset - r) +')';
+    //     })
+    //     .text(this.props.labelFormat);
 
-    var lineData = [ [this.props.pointerWidth / 2, 0], 
-            [0, -pointerHeadLength],
-            [-(this.props.pointerWidth / 2), 0],
-            [0, this.props.pointerTailLength],
-            [this.props.pointerWidth / 2, 0] ];
-        return (
-            <g transform={translate}>
-                {pie.map((d, i) => this.arcGenerator(d, i))}
-            </g>
-        )
+    // var lineData = [ [this.props.pointerWidth / 2, 0], 
+    //         [0, -pointerHeadLength],
+    //         [-(this.props.pointerWidth / 2), 0],
+    //         [0, this.props.pointerTailLength],
+    //         [this.props.pointerWidth / 2, 0] ];
+    //     return (
+    //         <g transform={translate}>
+    //             {pie.map((d, i) => this.arcGenerator(d, i))}
+    //         </g>
+    //     )
+
+    return (
+      <svg width= {this.props.clipWidth} height={this.props.clipHeight}>
+        {/* We'll create this component in a minute */}
+        <Pie x={this.props.x} y={this.props.y} radius={this.props.radius} data={this.arcData} />
+      </svg>
+    );
     }
 
  render() {
@@ -129,12 +143,15 @@ class Pie extends React.Component {
     // https://github.com/d3/d3/wiki/Ordinal-Scales#category10
     this.colorScale = d3.scaleOrdinal(d3.schemeCategory10);
     this.renderSlice = this.renderSlice.bind(this);
+    this.pieGenerator = d3.pie().startAngle(-0.5 * Math.PI).endAngle(0.5 * Math.PI);
+
+    this.arcGenerator = d3.arc().innerRadius(20).outerRadius(100);
   }
 
   render() {
     let {x, y, data} = this.props;
     // https://github.com/d3/d3/wiki/Pie-Layout
-    let pie = d3.pie();
+    let pie = d3.pie().startAngle(-0.5 * Math.PI).endAngle(0.5 * Math.PI);
     return (
       <g transform={`translate(${x}, ${y})`}>
         {/* Render a slice for each data point */}
@@ -145,9 +162,12 @@ class Pie extends React.Component {
 
   renderSlice(value, i) {
     // We'll create this component in a minute
+        this.pieGenerator = d3.pie().startAngle(-0.5 * Math.PI).endAngle(0.5 * Math.PI);
+
+    this.arcGenerator = d3.arc().innerRadius(20).outerRadius(100);
     return (
       <Slice key={i}
-             outerRadius={this.props.radius}
+             outerRadius={100}
              value={value}
              fill={this.colorScale(i)} />
     );
@@ -158,9 +178,7 @@ class Slice extends React.Component {
   render() {
     let {value, fill, innerRadius = 0, outerRadius} = this.props;
     // https://github.com/d3/d3/wiki/SVG-Shapes#arc
-    let arc = d3.arc()
-      .innerRadius(innerRadius)
-      .outerRadius(outerRadius);
+    let arc = d3.arc().innerRadius(20).outerRadius(100);
     return (
       <path d={arc(value)} fill={fill} />
     );
