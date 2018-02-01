@@ -6,6 +6,7 @@ import * as d3 from "d3";
 // Based on http://bl.ocks.org/msqr/3202712
 // another good example https://swizec.com/blog/how-to-make-a-piechart-using-react-and-d3/swizec/6785
 // very good library ----> https://bl.ocks.org/d3indepth
+// for animation : http://blog.scottlogic.com/2015/09/03/d3-without-d3.html
 
 export class DialChart extends React.Component {   
   constructor(props) {
@@ -37,8 +38,6 @@ export class DialChart extends React.Component {
     let x = width / 2;
     let y = height / 2;
 
-   
-
     return (
       <svg width= {width} height={height}>
         {/* We'll create this component in a minute */}
@@ -64,20 +63,15 @@ class Pie extends React.Component {
     let pie = d3.pie().startAngle(-0.5 * Math.PI).endAngle(0.5 * Math.PI);
     return (
       <g transform={`translate(${x}, ${y})`}>
-        {/* Render a slice for each data point */}
-        {pie(data).map(this.renderSlice)}
+        {pie(data).map( /* Render a slice for each data point */
+                      (value, i) => <Slice key={i}
+                               value={value}
+                               fill={this.colorScale(0.05*i)} />
+          )}
       </g>
     );
   }
 
-  renderSlice = (value, i) => {
-
-    return (
-      <Slice key={i}
-             value={value}
-             fill={this.colorScale(0.05*i)} />
-    );
-  }
 }
 
 class Slice extends React.Component {
