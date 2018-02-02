@@ -60,6 +60,7 @@ class Pie extends React.Component {
   render() {
     let {x, y, data} = this.props;
     // https://github.com/d3/d3/wiki/Pie-Layout
+    // Set piechart start and end angles ie full donut, half donut or quater donut.
     let pie = d3.pie().startAngle(-0.5 * Math.PI).endAngle(0.5 * Math.PI);
     return (
       <g transform={`translate(${x}, ${y})`}>
