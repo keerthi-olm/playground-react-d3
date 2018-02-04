@@ -7,6 +7,7 @@ import * as d3 from "d3";
 // another good example https://swizec.com/blog/how-to-make-a-piechart-using-react-and-d3/swizec/6785
 // very good library ----> https://bl.ocks.org/d3indepth
 // for animation : http://blog.scottlogic.com/2015/09/03/d3-without-d3.html
+// speed meter : full code https://github.com/palerdot/react-d3-speedometer/blob/master/src/index.js
 
 export class DialChart extends React.Component {   
   constructor(props) {
