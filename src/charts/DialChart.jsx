@@ -16,11 +16,11 @@ export class DialChart extends React.Component {
     this.pointerHeadLength = Math.round(this.r * props.pointerHeadLengthPercent);
 
  }
-  deg2rad(deg) {
+  deg2rad = (deg)=>{
     return deg * Math.PI / 180;
   }
   
-  newAngle(d) {
+  newAngle = (d)=>{
     var ratio = this.scale(d);
     var newAngle = this.props.minAngle + (this.ratio * this.range);
     return newAngle;
@@ -43,6 +43,7 @@ export class DialChart extends React.Component {
       <svg width= {width} height={height}>
         {/* We'll create this component in a minute */}
         <Pie x={x} y={y} radius={radius} data={[5, 2, 7, 1, 1, 3, 4,9,5, 2, ]} />
+       <Pointer value={this.props.value} />
       </svg>
     );
   }
@@ -86,6 +87,55 @@ class Slice extends React.Component {
     );
   }
 }
+
+class Pointer extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state.value = this.props.value ;
+   var pointer_config = {
+                ringInset: 20,
+
+                pointerWidth: 10,
+                pointerTailLength: 5,
+                pointerHeadLengthPercent: 0.9,
+
+                minAngle: -90,
+                maxAngle: 90,
+
+                labelInset: 10,
+
+                // calculate the ReactSpeedometer 'parentNode' width/height; it might be used if fluidWidth: true
+                parentWidth: 200,
+                parentHeight: 100
+            };
+
+  }
+
+  shouldComponentUpdate(nextProps, nextState, nextContext) {
+    if(nextState.value !== this.state.value) {
+          return true
+    } 
+    console.log('not changed------------');
+    return false
+    
+  }
+  
+    // every few seconds update reading values
+  componentDidMount() {
+    this.interval = setInterval(() => {this.setState({value:Math.floor(Math.random() * 10)});}, 3000);
+  }
+
+
+  render() {
+
+    return (
+      <div>{this.state.value}</div>
+    );
+  }
+}
+
+
     DialChart.propTypes = {
         width:PropTypes.number,
         height:PropTypes.number,
@@ -106,7 +156,8 @@ class Slice extends React.Component {
         minAngle: PropTypes.number,
         maxAngle: PropTypes.number,
         majorTicks:PropTypes.number,
-        labelInset: PropTypes.number 
+        labelInset: PropTypes.number,
+        value:PropTypes.number
              
     }
     DialChart.defaultProps = {
@@ -130,7 +181,8 @@ class Slice extends React.Component {
             minAngle: -90,
             maxAngle: 90,
             majorTicks: 5,
-            labelInset: 10
+            labelInset: 10,
+            value:6
 
 
     }
