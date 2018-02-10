@@ -1,5 +1,5 @@
 import React from 'react';
-// import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import * as d3 from "d3";
 
@@ -21,11 +21,7 @@ export class DialChart extends React.Component {
     return deg * Math.PI / 180;
   }
   
-  newAngle = (d)=>{
-    var ratio = this.scale(d);
-    var newAngle = this.props.minAngle + (this.ratio * this.range);
-    return newAngle;
-  }
+
 
  render() {
     // For a real world project, use something like
@@ -126,17 +122,10 @@ class Pointer extends React.Component {
   shouldComponentUpdate(nextProps, nextState, nextContext) {
     if(nextState.value !== this.state.value) {
     console.log(this.pointer_config.minAngle);
-const g = d3.select(this.refs.g);
-var pointerLine=d3.line();
-              g.data([this.line])
-                            .attr('class', 'pointer')
-                            .attr('transform', 'translate(' + 250 + ',' + 250 + ')')
-                            .style("fill", 'red')
-                            .style("stroke", "red");
-                            g.append('path')
-                                            .attr('d', pointerLine )   .transition().duration(4000).attrTween("transform", function(interpolate) {
-        return d3.interpolateString("rotate(" +(-90)+")", "rotate(" + 30 + ")");
-      })
+
+   this.update(this.state.value);
+                            
+     
           return true
     } 
     console.log('not changed------------');
@@ -146,9 +135,25 @@ var pointerLine=d3.line();
   
     // every few seconds update reading values
   componentDidMount() {
+    const g = d3.select(this.refs.g);
+      var pointerLine=d3.line();
+    
+              g.data([this.line])
+                            .attr('class', 'pointer')
+                            .attr('transform', 'translate(' + 250 + ',' + 250 + ')')
+                            .style("fill", 'red')
+                            .style("stroke", "red").append('path').attr('d', pointerLine );
+   this.update(this.state.value);
     this.interval = setInterval(() => {this.setState({value:Math.floor(Math.random() * 10)});}, 3000);
   }
 
+ update(value) {
+  var pointerLine=d3.line();
+  const g = d3.select(this.refs.g.childNodes[0]);
+                g.transition().duration(4000).attrTween("transform", function(interpolate) {
+         return d3.interpolateString("rotate(" +(-90)+")", "rotate(" + 30 + ")");
+ });
+}
 
   render() {
 
