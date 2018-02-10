@@ -8,6 +8,7 @@ import * as d3 from "d3";
 // very good library ----> https://bl.ocks.org/d3indepth
 // for animation : http://blog.scottlogic.com/2015/09/03/d3-without-d3.html
 // speed meter : full code https://github.com/palerdot/react-d3-speedometer/blob/master/src/index.js
+//needle rostation: https://stackoverflow.com/questions/38585575/d3-js-gauge-needle-rotate-with-dynamic-data
 
 export class DialChart extends React.Component {   
   constructor(props) {
@@ -92,8 +93,8 @@ class Pointer extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state.value = this.props.value ;
-   var pointer_config = {
+    this.state = {value: this.props.value };
+   this.pointer_config = {
                 ringInset: 20,
 
                 pointerWidth: 10,
@@ -109,11 +110,33 @@ class Pointer extends React.Component {
                 parentWidth: 200,
                 parentHeight: 100
             };
+              this.pointerLine = d3.line().curve('d3CurveMonotoneX' );
+      var r = 300 / 2;
+                this.pointerHeadLength = Math.round(r * this.pointer_config.pointerHeadLengthPercent)
+      this.line= [             [this.pointer_config.pointerWidth / 2, 0],
+                    [0, -(this.pointerHeadLength)],
+                    [-(this.pointer_config.pointerWidth / 2), 0],
+                    [0, this.pointer_config.pointerTailLength],
+                    [this.pointer_config.pointerWidth / 2, 0]
+                  ];
 
+    
   }
 
   shouldComponentUpdate(nextProps, nextState, nextContext) {
     if(nextState.value !== this.state.value) {
+    console.log(this.pointer_config.minAngle);
+const g = d3.select(this.refs.g);
+var pointerLine=d3.line();
+              g.data([this.line])
+                            .attr('class', 'pointer')
+                            .attr('transform', 'translate(' + 250 + ',' + 250 + ')')
+                            .style("fill", 'red')
+                            .style("stroke", "red");
+                            g.append('path')
+                                            .attr('d', pointerLine )   .transition().duration(4000).attrTween("transform", function(interpolate) {
+        return d3.interpolateString("rotate(" +(-90)+")", "rotate(" + 30 + ")");
+      })
           return true
     } 
     console.log('not changed------------');
@@ -130,7 +153,8 @@ class Pointer extends React.Component {
   render() {
 
     return (
-      <div>{this.state.value}</div>
+      <g ref='g'></g>
+      
     );
   }
 }
