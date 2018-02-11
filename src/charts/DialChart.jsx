@@ -121,14 +121,9 @@ class Pointer extends React.Component {
 
   shouldComponentUpdate(nextProps, nextState, nextContext) {
     if(nextState.value !== this.state.value) {
-    console.log(this.pointer_config.minAngle);
-
-   this.update(this.state.value);
-                            
-     
-          return true
+        this.update(nextState.value,this.state.value);
+        return true
     } 
-    console.log('not changed------------');
     return false
     
   }
@@ -136,30 +131,29 @@ class Pointer extends React.Component {
     // every few seconds update reading values
   componentDidMount() {
     const g = d3.select(this.refs.g);
-      var pointerLine=d3.line();
-    
-              g.data([this.line])
+    var pointerLine=d3.line();
+    g.data([this.line])
                             .attr('class', 'pointer')
                             .attr('transform', 'translate(' + 250 + ',' + 250 + ')')
                             .style("fill", 'red')
                             .style("stroke", "red").append('path').attr('d', pointerLine );
    this.update(this.state.value);
-    this.interval = setInterval(() => {this.setState({value:Math.floor(Math.random() * 10)});}, 3000);
+   this.interval = setInterval(() => {this.setState({value:Math.floor(Math.random() * 10)});}, 7000);
   }
 
- update(value) {
-  var pointerLine=d3.line();
+ update(value,oldValue=5) {
+    var pointerLine=d3.line();
 
-  var scale = d3.scaleLinear()
-                            .range([0, 1])
-                            .domain([0, 10]);
-         var ratio = scale(value);  
-         var range = this.pointer_config.maxAngle - this.pointer_config.minAngle;   
-         var newAngle = this.pointer_config.minAngle + (ratio * range);              
+    var scale = d3.scaleLinear().range([0, 1]).domain([0, 10]);
+    var ratio = scale(value); 
+    var oldRatio = scale(oldValue); 
+    var range = this.pointer_config.maxAngle - this.pointer_config.minAngle;   
+    var newAngle = this.pointer_config.minAngle + (ratio * range); 
+    var oldAngle =  this.pointer_config.minAngle + (oldRatio * range);         
   
-  const g = d3.select(this.refs.g.childNodes[0]);
-                g.transition().duration(4000).attrTween("transform", function(interpolate) {
-         return d3.interpolateString("rotate(" +(-90)+")", "rotate(" + 30 + ")");
+    const g = d3.select(this.refs.g.childNodes[0]);
+                g.transition().duration(7000).attrTween("transform", function(interpolate) {
+         return d3.interpolateString("rotate(" + (oldAngle)+")", "rotate(" + newAngle + ")");
  });
 
 
