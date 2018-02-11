@@ -10,6 +10,17 @@ import * as d3 from "d3";
 // speed meter : full code https://github.com/palerdot/react-d3-speedometer/blob/master/src/index.js
 //needle rostation: https://stackoverflow.com/questions/38585575/d3-js-gauge-needle-rotate-with-dynamic-data
 
+
+//ToDo  ::::  claen up varialbles, use properties and states properly
+//            Refactor functions
+//             What you learnt  : 
+//             Pie chart angle calculations, 
+//            Template strings (backticks)
+//            using tween functions in d3...
+//            intpropelateing functions
+
+
+
 export class DialChart extends React.Component {   
   constructor(props) {
     super();
@@ -17,11 +28,6 @@ export class DialChart extends React.Component {
     this.pointerHeadLength = Math.round(this.r * props.pointerHeadLengthPercent);
 
  }
-  deg2rad = (deg)=>{
-    return deg * Math.PI / 180;
-  }
-  
-
 
  render() {
     // For a real world project, use something like
@@ -40,7 +46,7 @@ export class DialChart extends React.Component {
       <svg width= {width} height={height}>
         {/* We'll create this component in a minute */}
         <Pie x={x} y={y} radius={radius} data={[5, 2, 7, 1, 1, 3, 4,9,5, 2, ]} />
-       <Pointer value={this.props.value} />
+       <Pointer value={this.props.value} scale={this.props.scale}/>
       </svg>
     );
   }
@@ -122,7 +128,7 @@ class Pointer extends React.Component {
   shouldComponentUpdate(nextProps, nextState, nextContext) {
     if(nextState.value !== this.state.value) {
         this.update(nextState.value,this.state.value);
-        return true
+        return false
     } 
     return false
     
@@ -141,23 +147,27 @@ class Pointer extends React.Component {
    this.interval = setInterval(() => {this.setState({value:Math.floor(Math.random() * 10)});}, 7000);
   }
 
- update(value,oldValue=5) {
+ update =(value,oldValue=5)=> {
     var pointerLine=d3.line();
 
-    var scale = d3.scaleLinear().range([0, 1]).domain([0, 10]);
-    var ratio = scale(value); 
-    var oldRatio = scale(oldValue); 
+    var scale = this.props.scale//d3.scaleLinear().range([0, 1]).domain([0, 10]); //move up
+
     var range = this.pointer_config.maxAngle - this.pointer_config.minAngle;   
-    var newAngle = this.pointer_config.minAngle + (ratio * range); 
-    var oldAngle =  this.pointer_config.minAngle + (oldRatio * range);         
+    var newAngle = this.getAngle(value,scale);  //this.pointer_config.minAngle + (ratio * range); 
+    var oldAngle =  this.getAngle(oldValue,scale);//this.pointer_config.minAngle + (oldRatio * range);         
   
     const g = d3.select(this.refs.g.childNodes[0]);
-                g.transition().duration(7000).attrTween("transform", function(interpolate) {
+                g.transition().duration(7000).attrTween("transform", function
+                  (interpolate) {
          return d3.interpolateString("rotate(" + (oldAngle)+")", "rotate(" + newAngle + ")");
- });
-
-
-}
+    });
+                return
+  }
+  getAngle = (value,scale)=>{
+    var ratio = scale(value); 
+    var range = this.pointer_config.maxAngle - this.pointer_config.minAngle; 
+    return  this.pointer_config.minAngle + (ratio * range);  
+  } 
 
   render() {
 
@@ -190,7 +200,8 @@ class Pointer extends React.Component {
         maxAngle: PropTypes.number,
         majorTicks:PropTypes.number,
         labelInset: PropTypes.number,
-        value:PropTypes.number
+        value:PropTypes.number,
+        scale:PropTypes.func 
              
     }
     DialChart.defaultProps = {
@@ -215,7 +226,8 @@ class Pointer extends React.Component {
             maxAngle: 90,
             majorTicks: 5,
             labelInset: 10,
-            value:6
+            value:6,
+            scale:d3.scaleLinear().range([0, 1]).domain([0, 10])
 
 
     }
