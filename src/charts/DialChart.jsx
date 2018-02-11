@@ -149,10 +149,20 @@ class Pointer extends React.Component {
 
  update(value) {
   var pointerLine=d3.line();
+
+  var scale = d3.scaleLinear()
+                            .range([0, 1])
+                            .domain([0, 10]);
+         var ratio = scale(value);  
+         var range = this.pointer_config.maxAngle - this.pointer_config.minAngle;   
+         var newAngle = this.pointer_config.minAngle + (ratio * range);              
+  
   const g = d3.select(this.refs.g.childNodes[0]);
                 g.transition().duration(4000).attrTween("transform", function(interpolate) {
          return d3.interpolateString("rotate(" +(-90)+")", "rotate(" + 30 + ")");
  });
+
+
 }
 
   render() {
