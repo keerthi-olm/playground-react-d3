@@ -25,15 +25,15 @@ export class DialChart extends React.Component {
   constructor(props) {
     super();
 
-    this.pointerHeadLength = Math.round(this.r * props.pointerHeadLengthPercent);
+    this.needleHeadLength = Math.round(this.r * props.needleHeadLengthPercent);
 
  }
 
- render() {
+ render = () => {
     // For a real world project, use something like
     // https://github.com/digidem/react-dimensions
-    let width = 500;
-    let height = 500;
+    let width = this.props.width;
+    let height = this.props.height;
     let minViewportSize = Math.min(width, height);
     // This sets the radius of the pie chart to fit within
     // the current window size, with some additional padding
@@ -45,8 +45,8 @@ export class DialChart extends React.Component {
     return (
       <svg width= {width} height={height}>
         {/* We'll create this component in a minute */}
-        <Pie x={x} y={y} radius={radius} data={[5, 2, 7, 1, 1, 3, 4,9,5, 2, ]} />
-       <Pointer value={this.props.value} scale={this.props.scale}/>
+        <Pie x={x} y={y} radius={radius} data={[5, 2, 7, 1, 1, 3, 4,9,5, 2, ]} conf={this.props}/>
+       <Pointer value={this.props.value} scale={this.props.scale} conf={this.props.needleConf} pieWidth={width} pieHeight={height}/>
       </svg>
     );
   }
@@ -55,24 +55,31 @@ export class DialChart extends React.Component {
 };
 
 class Pie extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     // https://github.com/d3/d3/wiki/Ordinal-Scales#category10
     this.colorScale = d3.interpolateHsl(d3.rgb('#e8e2ca'), d3.rgb('#3e6c0a'));
+    // This sets the radius of the pie chart to fit within
+    // the current window size, with some additional padding
+     let minViewportSize = Math.min(this.props.conf.width, this.props.conf.height);// move up
+
+     this.outerRadius = (minViewportSize * .9) / 2;// move up
 
   }
 
-  render() {
+  render = () => {
     let {x, y, data} = this.props;
     // https://github.com/d3/d3/wiki/Pie-Layout
     // Set piechart start and end angles ie full donut, half donut or quater donut.
-    let pie = d3.pie().startAngle(-0.5 * Math.PI).endAngle(0.5 * Math.PI);
+    let pie = d3.pie().startAngle(-0.5 * Math.PI).endAngle(0.5 * Math.PI);  // toDo :Replace angles with start/end variables
     return (
       <g transform={`translate(${x}, ${y})`}>
         {pie(data).map( /* Render a slice for each data point */
                       (value, i) => <Slice key={i}
                                value={value}
-                               fill={this.colorScale(0.05*i)} />
+                               fill={this.colorScale(0.05*i)}
+                                innerRadius={this.props.conf.innerRadius}
+                                outerRadius={this.outerRadius} />
           )}
       </g>
     );
@@ -81,10 +88,13 @@ class Pie extends React.Component {
 }
 
 class Slice extends React.Component {
-  render() {
+  render = () => {
     let {value, fill, innerRadius = 0, outerRadius} = this.props;
     // https://github.com/d3/d3/wiki/SVG-Shapes#arc
-    let arc = d3.arc().innerRadius(20).outerRadius(100);
+    // for alice settings see http://d3indepth.com/shapes/#arc-generator
+    // can add the following to make prettier .padAngle(.02) .padRadius(100) .cornerRadius(4);
+    let arc = d3.arc().innerRadius(this.props.innerRadius).outerRadius(this.props.outerRadius)
+  
     return (
       <path d={arc(value)} fill={fill} stroke='white'/>
     );
@@ -96,61 +106,48 @@ class Pointer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {value: this.props.value };
-   this.pointer_config = {
-                ringInset: 20,
+    this.pointer_config  = props.conf;
 
-                pointerWidth: 10,
-                pointerTailLength: 5,
-                pointerHeadLengthPercent: 0.9,
-
-                minAngle: -90,
-                maxAngle: 90,
-
-                labelInset: 10,
-
-                // calculate the ReactSpeedometer 'parentNode' width/height; it might be used if fluidWidth: true
-                parentWidth: 200,
-                parentHeight: 100
-            };
-              this.pointerLine = d3.line().curve('d3CurveMonotoneX' );
-      var r = 300 / 2;
-                this.pointerHeadLength = Math.round(r * this.pointer_config.pointerHeadLengthPercent)
-      this.line= [             [this.pointer_config.pointerWidth / 2, 0],
-                    [0, -(this.pointerHeadLength)],
-                    [-(this.pointer_config.pointerWidth / 2), 0],
-                    [0, this.pointer_config.pointerTailLength],
-                    [this.pointer_config.pointerWidth / 2, 0]
+    this.pointerLine = d3.line().curve('d3CurveMonotoneX' );
+    let minViewportSize = Math.min(this.props.pieWidth, this.props.pieHeight);// move up
+    this.outerRadius = (minViewportSize * .9) / 2; // move up
+                this.needleHeadLength = Math.round(this.outerRadius * this.pointer_config.needleHeadLengthPercent)
+      this.line= [  [this.pointer_config.needleWidth / 2, 0],
+                    [0, -(this.needleHeadLength)],
+                    [-(this.pointer_config.needleWidth / 2), 0],
+                    [0, this.pointer_config.needleTailLength],
+                    [this.pointer_config.needleWidth / 2, 0]
                   ];
 
-    
+    this.pointerLine=d3.line(); 
   }
 
-  shouldComponentUpdate(nextProps, nextState, nextContext) {
+  shouldComponentUpdate = (nextProps, nextState, nextContext) => {
+
     if(nextState.value !== this.state.value) {
         this.update(nextState.value,this.state.value);
         return false
-    } 
-    return false
-    
+    } else if (nextState.value === this.state.value) return false
+
+     // if other properties change and want to initate a render the put more condiotions here on other states 
   }
   
     // every few seconds update reading values
   componentDidMount() {
     const g = d3.select(this.refs.g);
-    var pointerLine=d3.line();
+     // move up
     g.data([this.line])
                             .attr('class', 'pointer')
-                            .attr('transform', 'translate(' + 250 + ',' + 250 + ')')
+                            .attr('transform', 'translate(' + this.props.pieHeight /2 + ',' + this.props.pieWidth / 2 + ')')
                             .style("fill", 'red')
-                            .style("stroke", "red").append('path').attr('d', pointerLine );
+                            .style("stroke", "red").append('path').attr('d', this.pointerLine);
    this.update(this.state.value);
    this.interval = setInterval(() => {this.setState({value:Math.floor(Math.random() * 10)});}, 7000);
   }
 
  update =(value,oldValue=5)=> {
-    var pointerLine=d3.line();
 
-    var scale = this.props.scale//d3.scaleLinear().range([0, 1]).domain([0, 10]); //move up
+    var scale = this.props.scale  //d3.scaleLinear().range([0, 1]).domain([0, 10]); //move up
 
     var range = this.pointer_config.maxAngle - this.pointer_config.minAngle;   
     var newAngle = this.getAngle(value,scale);  //this.pointer_config.minAngle + (ratio * range); 
@@ -161,11 +158,11 @@ class Pointer extends React.Component {
                   (interpolate) {
          return d3.interpolateString("rotate(" + (oldAngle)+")", "rotate(" + newAngle + ")");
     });
-                return
+        
   }
-  getAngle = (value,scale)=>{
-    var ratio = scale(value); 
-    var range = this.pointer_config.maxAngle - this.pointer_config.minAngle; 
+  getAngle = (value,scale)=>{ //move up
+    let ratio = scale(value); 
+    let range = this.pointer_config.maxAngle - this.pointer_config.minAngle; 
     return  this.pointer_config.minAngle + (ratio * range);  
   } 
 
@@ -178,8 +175,7 @@ class Pointer extends React.Component {
   }
 }
 
-
-    DialChart.propTypes = {
+                   DialChart.propTypes = {
         width:PropTypes.number,
         height:PropTypes.number,
         radius:PropTypes.number,
@@ -201,22 +197,40 @@ class Pointer extends React.Component {
         majorTicks:PropTypes.number,
         labelInset: PropTypes.number,
         value:PropTypes.number,
-        scale:PropTypes.func 
+        scale:PropTypes.func,
+        needleConf: PropTypes.shape({
+                                      ringInset: PropTypes.number,
+                                      needleWidth: PropTypes.number,
+                                      needleTailLength: PropTypes.number,
+                                      needleHeadLengthPercent: PropTypes.number,
+                                      minAngle: PropTypes.number,
+                                      maxAngle: PropTypes.number,
+                                      labelInset: PropTypes.number,
+                                      parentWidth: PropTypes.number,
+                                      parentHeight: PropTypes.number,
+                                      innerRadius:PropTypes.number,
+                                      outerRadius:PropTypes.number
+                                    })
+                                
              
     }
+    // use shape ie : 
+    //  propTypes: {
+    //   data: PropTypes.shape({
+    //     id: PropTypes.number.isRequired,
+    //     title: PropTypes.string
+    //  })
+    // }
     DialChart.defaultProps = {
     
-            width: 300,
-            height: 300,
+            width: 500,
+            height: 500,
             radius:100,
-            innerRadius:50,
+            innerRadius:0,
             pi:PropTypes.number,
             chartId: 'halfPie_chart',
             color: d3.schemeCategory10,
-            width: 300,
-            height: 300,
-            radius:100,
-            innerRadius:50,
+            outerRadius:200,
             pi:PropTypes.number,
             chartId: 'halfPie_chart',
             color: d3.schemeCategory10,
@@ -227,7 +241,20 @@ class Pointer extends React.Component {
             majorTicks: 5,
             labelInset: 10,
             value:6,
-            scale:d3.scaleLinear().range([0, 1]).domain([0, 10])
+            scale:d3.scaleLinear().range([0, 1]).domain([0, 10]),
+            needleConf:      {
+                                ringInset: 20,
+                                needleWidth: 8,
+                                needleTailLength: 5,
+                                needleHeadLengthPercent: 0.65,
+                                minAngle: -90,
+                                maxAngle: 90,
+                                labelInset: 10,
+                                parentWidth: 200,
+                                parentHeight: 100,
+                                innerRadius:20,
+                                outerRadius:100
+                              }
 
 
     }
