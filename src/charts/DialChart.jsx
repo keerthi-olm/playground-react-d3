@@ -75,11 +75,11 @@ class Pie extends React.Component {
     return (
       <g transform={`translate(${x}, ${y})`}>
         {pie(data).map( /* Render a slice for each data point */
-                      (value, i) => <Slice key={i}
+                      (value, i ) => <Slice key={i}
                                value={value}
                                fill={this.colorScale(0.05*i)}
                                 innerRadius={this.props.conf.innerRadius}
-                                outerRadius={this.outerRadius} />
+                                outerRadius={this.outerRadius}  />
           )}
       </g>
     );
@@ -88,6 +88,47 @@ class Pie extends React.Component {
 }
 
 class Slice extends React.Component {
+  componentDidMount() { 
+         let arc = d3.arc().innerRadius(this.props.innerRadius).outerRadius(this.props.outerRadius);
+
+         var path = d3.select(this.refs.path).data([this.props.value]).attr('d',arc(this.props.value))
+            .transition()
+            .duration(2000)
+            .attrTween("d", function (d) { 
+                var start = {startAngle: 0, endAngle: 0};
+                var interpolate = d3.interpolate(start, d);
+                return function (t) {
+                    return arc(interpolate(t));
+                };
+            });
+
+
+// folow example http://bl.ocks.org/mbostock/5100636
+// this.props.value is arry that contains start and end angles
+//OR https://stackoverflow.com/questions/34434127/d3-js-smooth-transition-on-arc-draw-for-pie-chart
+
+   //  .transition()
+   //  .delay(function(d, i) {
+   //    return i * 800;
+   //  })
+   //      .attrTween('d', function(d) {
+   // var i = d3.interpolate(d.startAngle+0.1, d.endAngle);
+   // return function(t) {
+   //     d.endAngle = i(t);
+   //   return arc(d);
+   // }
+   //});
+//-------------- another way to animate  -----------
+          // .attrTween("d", function (d) { 
+          //       var start = {startAngle: 0, endAngle: 0};
+          //       var interpolate = d3.interpolate(start, d);
+          //       return function (t) {
+          //           return arc(interpolate(t));
+          //       };
+          //   });
+
+   }
+
   render = () => {
     let {value, fill, innerRadius = 0, outerRadius} = this.props;
     // https://github.com/d3/d3/wiki/SVG-Shapes#arc
@@ -96,7 +137,7 @@ class Slice extends React.Component {
     let arc = d3.arc().innerRadius(this.props.innerRadius).outerRadius(this.props.outerRadius)
   
     return (
-      <path d={arc(value)} fill={fill} stroke='white'/>
+      <path ref='path' d={[]} fill={fill} stroke='white' />
     );
   }
 }
@@ -226,7 +267,7 @@ class Pointer extends React.Component {
             width: 500,
             height: 500,
             radius:100,
-            innerRadius:0,
+            innerRadius:100,
             pi:PropTypes.number,
             chartId: 'halfPie_chart',
             color: d3.schemeCategory10,
@@ -244,9 +285,9 @@ class Pointer extends React.Component {
             scale:d3.scaleLinear().range([0, 1]).domain([0, 10]),
             needleConf:      {
                                 ringInset: 20,
-                                needleWidth: 8,
+                                needleWidth: 15,
                                 needleTailLength: 5,
-                                needleHeadLengthPercent: 0.65,
+                                needleHeadLengthPercent: .95,
                                 minAngle: -90,
                                 maxAngle: 90,
                                 labelInset: 10,

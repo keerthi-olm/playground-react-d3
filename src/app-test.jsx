@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import LineChart from './charts/LineChart'
 import DialChart from './charts/DialChart'
+import PieBasicChart from './charts/pieBasic'
 import ReactSpeedometer from './charts/SpeedO'
 
 
@@ -12,6 +13,7 @@ class App extends Component {
                <div className="pure-u-1">
                 <div className="bottom-right-svg">
                     <LineChart/>
+                    <PieBasicChart/>
                     <DialChart/>
                     <ReactSpeedometer/>
                 </div>
