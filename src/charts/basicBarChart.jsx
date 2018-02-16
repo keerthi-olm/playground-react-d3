@@ -8,28 +8,32 @@ import * as d3 from "d3";
 export class SingleBarChart extends React.Component {   
 
  render = () => {
-    var {width,height,margin,radius,innerRadius,arcSizeInAngle,parseDate,xScale,yScale,data} = this.props;
+    var {widthFn,heightFn,margin,radius,innerRadius,arcSizeInAngle,parseDate,xScale,yScale,data} = this.props;
     this.colorScale = d3.interpolateHsl(d3.rgb('#e8e2ca'), d3.rgb('#3e6c0a'));
 
         data.forEach(function(d) {
         d.date = parseDate(d.date);
         d.value = +d.value;
 
-    xScale(width(margin)).domain(data.map(function(d) { return d.date; }));
-    yScale(width(margin)).domain([0, d3.max(data, function(d) { return d.value; })]);
+    xScale(widthFn(margin)).domain(data.map(function(d) { return d.date; }));
+    yScale(heightFn(margin)).domain([0, d3.max(data, function(d) { return d.value; })]);
     });
     return (
-      <svg width= {width} height={height} >
+      <svg width= {widthFn(margin)} height={heightFn(margin)} >
         {/* formula for dgerees to rads :::->  deg * Math.PI / 180 */}
 
         <g transform={`translate(${margin.left} ,${margin.top})`}>
 
         </g>
-        <Bar 
-               arcSize={{endAngle: this.props.degToRad(arcSizeInAngle)}}
-               fill={this.colorScale(0.05*1)}
-               innerRadius={innerRadius}
-               outerRadius={radius}  />
+         {data.map(
+                   (value, i ) => <Bar 
+                   value={value}
+               xScale={xScale}
+               yScale={yScale}
+               fill={this.colorScale(0.05*1)} />
+          )}
+
+         
       </svg>
     );
   }
@@ -45,6 +49,7 @@ class Bar extends React.Component {
    }
 
   render = () => {
+    let {xScale,yScale, value} = this.props
     let {arcSize, fill, innerRadius = 0, outerRadius,startAngle=0} = this.props;
     // https://github.com/d3/d3/wiki/SVG-Shapes#arc
     // for alice settings see http://d3indepth.com/shapes/#arc-generator
@@ -55,9 +60,15 @@ class Bar extends React.Component {
       .startAngle(0);
   
     return (
-      <g height='300' width='300'>
-      <path ref='path' d={arc(arcSize)} fill={fill} stroke='blue' />
-      </g>
+      <rectangle 
+      fill = "steelblue"
+          x={(value) => { return xScale(value.date)}}
+          y={(value) => { return yScale(value.value)}}
+
+          width= {this.props.xScale.rangeBand}
+
+      />
+      
     );
   }
 }
@@ -92,8 +103,8 @@ class Bar extends React.Component {
     SingleBarChart.defaultProps = {
     
             margin:{top: 20, right: 20, bottom: 70, left: 40},
-            width: (margin) => {return 600 - margin.left - margin.right},
-            height: (margin) => {return 300 - margin.top - margin.bottom},
+            widthFn: (margin) => {return 600 - margin.left - margin.right},
+            heightFn: (margin) => {return 300 - margin.top - margin.bottom},
             xScale: (width) => {return d3.scaleBand().range([0, width], .05);},
             yScale: (height) => {return d3.scaleLinear().range([height, 0]);},
             innerRadius:80,
