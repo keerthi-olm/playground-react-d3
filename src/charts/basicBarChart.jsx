@@ -4,20 +4,23 @@ import PropTypes from 'prop-types';
 import * as d3 from "d3";
 
 //http://bl.ocks.org/d3noob/8952219
+//https://plnkr.co/edit/WjmCzZ?p=preview
 //C:\Temp\react-d3-current-28-01-2018\src
 export class SingleBarChart extends React.Component {   
 
  render = () => {
     var {widthFn,heightFn,margin,radius,innerRadius,arcSizeInAngle,parseDate,xScale,yScale,data} = this.props;
     this.colorScale = d3.interpolateHsl(d3.rgb('#e8e2ca'), d3.rgb('#3e6c0a'));
-
+var parseDate = d3.timeParse("%Y-%m");
         data.forEach(function(d) {
         d.date = parseDate(d.date);
         d.value = +d.value;
-
-    xScale(widthFn(margin)).domain(data.map(function(d) { return d.date; }));
-    yScale(heightFn(margin)).domain([0, d3.max(data, function(d) { return d.value; })]);
-    });
+      });
+            xScale= d3.scaleBand().range([0, widthFn(margin)], .05);
+            yScale=d3.scaleLinear().range([heightFn(margin), 0]);
+    xScale.domain(data.map(function(d) { return d.date; }));
+    yScale.domain([0, d3.max(data, function(d) { return d.value; })]);
+   
     return (
       <svg width= {widthFn(margin)} height={heightFn(margin)} >
         {/* formula for dgerees to rads :::->  deg * Math.PI / 180 */}
@@ -30,6 +33,8 @@ export class SingleBarChart extends React.Component {
                    value={value}
                xScale={xScale}
                yScale={yScale}
+              
+
                fill={this.colorScale(0.05*1)} />
           )}
 
@@ -58,14 +63,17 @@ class Bar extends React.Component {
       .innerRadius(innerRadius)
       .outerRadius(outerRadius)
       .startAngle(0);
-  
-    return (
-      <rectangle 
-      fill = "steelblue"
-          x={(value) => { return xScale(value.date)}}
-          y={(value) => { return yScale(value.value)}}
+  // console.log('----->'+((value) => {return 500 - yScale(value.value);})());
 
-          width= {this.props.xScale.rangeBand}
+
+    return (
+      <rect
+      fill = "steelblue"
+          x={xScale(value.date)}
+          y={yScale(value.value)}
+
+          width= {xScale.bandwidth(value.date)}
+          height={((value) =>{ return 500 - yScale(value.value); })(value)}
 
       />
       
@@ -81,14 +89,15 @@ class Bar extends React.Component {
         innerRadius:PropTypes.number,
         arcSizeInAngle: PropTypes.number,
         degToRad:PropTypes.func,
-        margin:PropTypes.array,
+        margin:PropTypes.object,
         width:PropTypes.func,
         height:PropTypes.func,
         xScale:PropTypes.func,
         yScale:PropTypes.func,
+        color:PropTypes.func,
 
 
-        data:PropTypes.object
+        data:PropTypes.array
 
                                 
              
@@ -126,10 +135,6 @@ class Bar extends React.Component {
  {
    "date": "2013-03",
    "value": "269"
- },
- {
-   "date": "date",
-   "value": "value"
  },
  {
    "date": "2013-01",
