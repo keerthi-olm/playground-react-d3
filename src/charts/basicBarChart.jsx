@@ -11,13 +11,16 @@ export class SingleBarChart extends React.Component {
  render = () => {
     var {widthFn,heightFn,margin,radius,innerRadius,arcSizeInAngle,parseDate,xScale,yScale,data} = this.props;
     this.colorScale = d3.interpolateHsl(d3.rgb('#e8e2ca'), d3.rgb('#3e6c0a'));
-var parseDate = d3.timeParse("%Y-%m");
+    var parseDate = d3.timeParse("%Y-%m");
         data.forEach(function(d) {
         d.date = parseDate(d.date);
         d.value = +d.value;
       });
-            xScale= d3.scaleBand().range([0, widthFn(margin)], .05);
-            yScale=d3.scaleLinear().range([heightFn(margin), 0]);
+
+    // Possible bug when you try to set the sacels via defaultProps. Needs further investigation    
+    //Scales worked out in 2 parts frts define scale, then map scale to domain of data
+    xScale= d3.scaleBand().range([0, widthFn(margin)], .05);
+    yScale=d3.scaleLinear().range([heightFn(margin), 0]);
     xScale.domain(data.map(function(d) { return d.date; }));
     yScale.domain([0, d3.max(data, function(d) { return d.value; })]);
    
@@ -33,12 +36,9 @@ var parseDate = d3.timeParse("%Y-%m");
                    value={value}
                xScale={xScale}
                yScale={yScale}
-              
-
                fill={this.colorScale(0.05*1)} />
           )}
 
-         
       </svg>
     );
   }
@@ -59,45 +59,37 @@ class Bar extends React.Component {
     // https://github.com/d3/d3/wiki/SVG-Shapes#arc
     // for alice settings see http://d3indepth.com/shapes/#arc-generator
     // can add the following to make prettier .padAngle(.02) .padRadius(100) .cornerRadius(4);
-    let arc = d3.arc()
-      .innerRadius(innerRadius)
-      .outerRadius(outerRadius)
-      .startAngle(0);
-  // console.log('----->'+((value) => {return 500 - yScale(value.value);})());
-
 
     return (
-      <rect
+      <rect ref='bar'
       fill = "steelblue"
           x={xScale(value.date)}
           y={yScale(value.value)}
 
           width= {xScale.bandwidth(value.date)}
-          height={((value) =>{ return 500 - yScale(value.value); })(value)}
-
-      />
-      
-    );
-  }
-}
+          height={((value) =>{ return 500 - yScale(value.value); })(value)}/>
+                
+        );
+      }
+    }
 
 
-      SingleBarChart.propTypes = {
-        width:PropTypes.number,
-        height:PropTypes.number,
-        radius:PropTypes.number,
-        innerRadius:PropTypes.number,
-        arcSizeInAngle: PropTypes.number,
-        degToRad:PropTypes.func,
-        margin:PropTypes.object,
-        width:PropTypes.func,
-        height:PropTypes.func,
-        xScale:PropTypes.func,
-        yScale:PropTypes.func,
-        color:PropTypes.func,
+    SingleBarChart.propTypes = {
+      width:PropTypes.number,
+      height:PropTypes.number,
+      radius:PropTypes.number,
+      innerRadius:PropTypes.number,
+      arcSizeInAngle: PropTypes.number,
+      degToRad:PropTypes.func,
+      margin:PropTypes.object,
+      width:PropTypes.func,
+      height:PropTypes.func,
+      xScale:PropTypes.func,
+      yScale:PropTypes.func,
+      color:PropTypes.func,
 
 
-        data:PropTypes.array
+      data:PropTypes.array
 
                                 
              
@@ -111,88 +103,88 @@ class Bar extends React.Component {
     // }
     SingleBarChart.defaultProps = {
     
-            margin:{top: 20, right: 20, bottom: 70, left: 40},
-            widthFn: (margin) => {return 600 - margin.left - margin.right},
-            heightFn: (margin) => {return 300 - margin.top - margin.bottom},
-            xScale: (width) => {return d3.scaleBand().range([0, width], .05);},
-            yScale: (height) => {return d3.scaleLinear().range([height, 0]);},
-            innerRadius:80,
-            color: d3.schemeCategory10,
-            outerRadius:200,
-            arcSizeInAngle: 120,
-            degToRad:(deg) => {return deg* Math.PI / 180},
-            parseDate: (date) => {return d3.timeParse("%Y-%m").parse},
+      margin:{top: 20, right: 20, bottom: 70, left: 40},
+      widthFn: (margin) => {return 600 - margin.left - margin.right},
+      heightFn: (margin) => {return 300 - margin.top - margin.bottom},
+      // xScale: ((widthFn) => {return d3.scaleBand().range([0, widthFn], .05);})(),
+      // yScale: ((heightFn) => {return d3.scaleLinear().range([heightFn, 0]);})(),
+      innerRadius:80,
+      color: d3.schemeCategory10,
+      outerRadius:200,
+      arcSizeInAngle: 120,
+      degToRad:(deg) => {return deg* Math.PI / 180},
+      parseDate: (date) => {return d3.timeParse("%Y-%m").parse},
 
-            data: [
- {
-   "date": "2013-01",
-   "value": "53"
- },
- {
-   "date": "2013-02",
-   "value": "165"
- },
- {
-   "date": "2013-03",
-   "value": "269"
- },
- {
-   "date": "2013-01",
-   "value": "53"
- },
- {
-   "date": "2013-02",
-   "value": "165"
- },
- {
-   "date": "2013-03",
-   "value": "269"
- },
- {
-   "date": "2013-04",
-   "value": "344"
- },
- {
-   "date": "2013-05",
-   "value": "376"
- },
- {
-   "date": "2013-06",
-   "value": "410"
- },
- {
-   "date": "2013-07",
-   "value": "421"
- },
- {
-   "date": "2013-08",
-   "value": "405"
- },
- {
-   "date": "2013-09",
-   "value": "376"
- },
- {
-   "date": "2013-10",
-   "value": "359"
- },
- {
-   "date": "2013-11",
-   "value": "392"
- },
- {
-   "date": "2013-12",
-   "value": "433"
- },
- {
-   "date": "2014-01",
-   "value": "455"
- },
- {
-   "date": "2014-02",
-   "value": "478"
- }
-]
+      data: [
+       {
+         "date": "2013-01",
+         "value": "53"
+       },
+       {
+         "date": "2013-02",
+         "value": "165"
+       },
+       {
+         "date": "2013-03",
+         "value": "269"
+       },
+       {
+         "date": "2013-01",
+         "value": "53"
+       },
+       {
+         "date": "2013-02",
+         "value": "165"
+       },
+       {
+         "date": "2013-03",
+         "value": "269"
+       },
+       {
+         "date": "2013-04",
+         "value": "344"
+       },
+       {
+         "date": "2013-05",
+         "value": "376"
+       },
+       {
+         "date": "2013-06",
+         "value": "410"
+       },
+       {
+         "date": "2013-07",
+         "value": "421"
+       },
+       {
+         "date": "2013-08",
+         "value": "405"
+       },
+       {
+         "date": "2013-09",
+         "value": "376"
+       },
+       {
+         "date": "2013-10",
+         "value": "359"
+       },
+       {
+         "date": "2013-11",
+         "value": "392"
+       },
+       {
+         "date": "2013-12",
+         "value": "433"
+       },
+       {
+         "date": "2014-01",
+         "value": "455"
+       },
+       {
+         "date": "2014-02",
+         "value": "478"
+       }
+      ]
            
 
 
