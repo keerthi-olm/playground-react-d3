@@ -15,12 +15,15 @@ class App extends Component {
             <div className="pure-g container">
                <div className="pure-u-1">
                 <div className="bottom-right-svg">
+
                     <LineChart/>
                     <PieBasicChart/>
                     <DialChart/>
-                    <ReactSpeedometer/>
-                    <SingleArc />
                     <SingleBarChart/>
+                    <ReactSpeedometer/>
+
+                    <SingleArc />
+                    
                 </div>
             </div>
             </div>

@@ -51,6 +51,21 @@ class Bar extends React.Component {
 
   componentDidMount() { 
         // can initiate animation here
+
+            //     bar.transition()
+            // .duration(animationDuration)
+            // .attr("y", 0)
+            // .attr("height", height);
+
+   var bar=d3.select(this.refs.bar).data([this.props.value])
+                       .attr('y',500)
+                       .attr('height',500)
+                       .transition()
+                       .ease(d3.easeElastic)  
+           .duration(3000).delay(1000)
+           .attr("height", 500 - this.props.yScale(this.props.value.value))
+           .attr("y", this.props.yScale(this.props.value.value));
+             
    }
 
   render = () => {
@@ -64,10 +79,10 @@ class Bar extends React.Component {
       <rect ref='bar'
       fill = "steelblue"
           x={xScale(value.date)}
-          y={yScale(value.value)}
+          y={0}
 
           width= {xScale.bandwidth(value.date)}
-          height={((value) =>{ return 500 - yScale(value.value); })(value)}/>
+          height={0}/>
                 
         );
       }
