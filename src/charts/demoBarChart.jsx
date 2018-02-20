@@ -6,16 +6,41 @@ import * as d3 from "d3";
 //http://bl.ocks.org/d3noob/8952219
 //https://plnkr.co/edit/WjmCzZ?p=preview
 //C:\Temp\react-d3-current-28-01-2018\src
-export class SingleBarChart extends React.Component {   
-
- render = () => {
-    var {widthFn,heightFn,margin,radius,innerRadius,arcSizeInAngle,parseDate,xScale,yScale,data} = this.props;
+export class DemoBarChart extends React.Component {   
+   constructor(props) { 
+  
+    super(props);
+    this.state = {style: 0 };
+    
     this.colorScale = d3.interpolateHsl(d3.rgb('#e8e2ca'), d3.rgb('#3e6c0a'));
     var parseDate = d3.timeParse("%Y-%m");
-        data.forEach(function(d) {
-        d.date = parseDate(d.date);
-        d.value = +d.value;
+        this.props.data.forEach(function(d) {
+
+          if (!(d.date instanceof Date)) {
+                d.date = parseDate(d.date);
+                d.value = +d.value;
+
+              }
       });
+
+
+  }
+  componentDidMount() { 
+        // can initiate animation here
+
+            //     bar.transition()
+            // .duration(animationDuration)
+            // .attr("y", 0)
+            // .attr("height", height);
+   
+
+   // this.update();
+    this.interval = setInterval(() => {this.setState({style:Math.floor(Math.random() * 4)});}, 15000);        
+   }
+
+ render = () => {
+    var {widthFn,heightFn,margin,radius,innerRadius,arcSizeInAngle,parseDate,xScale,yScale,data,chartStyles} = this.props;
+
 
     // Possible bug when you try to set the sacels via defaultProps. Needs further investigation    
     //Scales worked out in 2 parts frts define scale, then map scale to domain of data
@@ -29,6 +54,7 @@ export class SingleBarChart extends React.Component {
 // easeCircle
 // easeExp
 // easeBack
+
     xScale= d3.scaleBand().range([0, widthFn(margin)], .05);
     yScale=d3.scaleLinear().range([heightFn(margin), 0]);
     xScale.domain(data.map(function(d) { return d.date; }));
@@ -42,11 +68,14 @@ export class SingleBarChart extends React.Component {
 
         </g>
          {data.map(
-                   (value, i ) => <Bar 
+                   (value, i ) => <Bar key={i}
                    value={value}
                xScale={xScale}
                yScale={yScale}
-               fill={this.colorScale(0.05*1)} />
+               
+               height={heightFn(margin)}
+                chartStyles={this.props.chartStyles}
+                style={this.state.style}/>
           )}
 
       </svg>
@@ -66,17 +95,35 @@ class Bar extends React.Component {
             // .duration(animationDuration)
             // .attr("y", 0)
             // .attr("height", height);
+   
 
-   var bar=d3.select(this.refs.bar).data([this.props.value])
+   this.update();
+   // this.interval = setInterval(() => {this.setState({chartStyle:Math.floor(Math.random() * 5)});}, 7000);        
+   }
+
+  componentDidUpdate = (nextProps, nextState, nextContext) => {
+
+  this.update();
+
+
+  }
+
+ update =()=> {
+    //: animation http://duspviz.mit.edu/d3-workshop/transitions-animation/
+    // https://swizec.com/blog/using-d3js-transitions-in-react/swizec/6797
+    // Furher research in animation hooks for react
+     var bar=d3.select(this.refs.bar).data([this.props.value])
                        .attr('y',500)
-                       .attr('height',500)
+                       .attr('height',this.props.height)
+                       .attr('fill',this.props.chartStyles[this.props.style][0])
                        .transition()
-                       .ease(d3.easeElastic)  
-           .duration(3000).delay(1000)
+                       .ease(d3.easeSin)  
+           .duration(1000).delay(Math.floor(Math.random() * 100) +500)
            .attr("height", 500 - this.props.yScale(this.props.value.value))
            .attr("y", this.props.yScale(this.props.value.value));
-             
-   }
+
+ }
+
 
   render = () => {
     let {xScale,yScale, value} = this.props
@@ -84,10 +131,11 @@ class Bar extends React.Component {
     // https://github.com/d3/d3/wiki/SVG-Shapes#arc
     // for alice settings see http://d3indepth.com/shapes/#arc-generator
     // can add the following to make prettier .padAngle(.02) .padRadius(100) .cornerRadius(4);
+    // d3.selectAll(this.refs.bar).remove();
 
     return (
       <rect ref='bar'
-      fill = "steelblue"
+      key={this.props.i}
           x={xScale(value.date)}
           y={0}
 
@@ -99,7 +147,7 @@ class Bar extends React.Component {
     }
 
 
-    SingleBarChart.propTypes = {
+    DemoBarChart.propTypes = {
       width:PropTypes.number,
       height:PropTypes.number,
       radius:PropTypes.number,
@@ -109,6 +157,7 @@ class Bar extends React.Component {
       xScale:PropTypes.func,
       yScale:PropTypes.func,
       color:PropTypes.func,
+      chartStyles:PropTypes.array,
 
 
       data:PropTypes.array
@@ -123,7 +172,7 @@ class Bar extends React.Component {
     //     title: PropTypes.string
     //  })
     // }
-    SingleBarChart.defaultProps = {
+    DemoBarChart.defaultProps = {
     
       margin:{top: 20, right: 20, bottom: 70, left: 40},
       widthFn: (margin) => {return 600 - margin.left - margin.right},
@@ -132,7 +181,12 @@ class Bar extends React.Component {
       // yScale: ((heightFn) => {return d3.scaleLinear().range([heightFn, 0]);})(),
       color: d3.schemeCategory10,
       parseDate: (date) => {return d3.timeParse("%Y-%m").parse},
-
+      chartStyles:[ 
+        ['silver','gold','green','blue'],
+        ['gold','gold','green','blue'],
+        ['lightblue','gold','green','blue'],
+        ['green','gold','green','blue']
+      ],
       data: [
        {
          "date": "2013-01",
@@ -207,6 +261,6 @@ class Bar extends React.Component {
 
 
     }
-export default SingleBarChart;
+export default DemoBarChart;
 
 

@@ -5,7 +5,7 @@ import PieBasicChart from './charts/pieBasic'
 import ReactSpeedometer from './charts/SpeedO'
 import SingleArc from './charts/singleArc'
 import SingleBarChart from './charts/basicBarChart'
-
+import DemoBarChart from './charts/demoBarChart'
 
 
 class App extends Component {
@@ -19,6 +19,7 @@ class App extends Component {
                     <LineChart/>
                     <PieBasicChart/>
                     <DialChart/>
+                    <DemoBarChart/>
                     <SingleBarChart/>
                     <ReactSpeedometer/>
 
