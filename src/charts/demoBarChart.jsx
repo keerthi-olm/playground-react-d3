@@ -13,49 +13,37 @@ export class DemoBarChart extends React.Component {
     this.state = {style: 0 };
     
     this.colorScale = d3.interpolateHsl(d3.rgb('#e8e2ca'), d3.rgb('#3e6c0a'));
-    var parseDate = d3.timeParse("%Y-%m");
-        this.props.data.forEach(function(d) {
-
-          if (!(d.date instanceof Date)) {
-                d.date = parseDate(d.date);
-                d.value = +d.value;
-
-              }
-      });
-
+    
 
   }
-  componentDidMount() { 
-        // can initiate animation here
 
-            //     bar.transition()
-            // .duration(animationDuration)
-            // .attr("y", 0)
-            // .attr("height", height);
-   
+  componentWillMount() {
+    var parseDate = d3.timeParse("%Y-%m");  //TRICKY : he parmeter for timeParse function is the forma of the date sring that is to be parsed
+            this.props.data.forEach(function(d) {
 
-   // this.update();
+              if (!(d.date instanceof Date)) {
+                    d.date = parseDate(d.date);
+                    d.value = +d.value;
+
+                  }
+          });
+
+  }
+
+  componentDidMount() {    
+
     this.interval = setInterval(() => {this.setState({style:Math.floor(Math.random() * 4)});}, 15000);        
+   
    }
 
- render = () => {
-    var {widthFn,heightFn,margin,radius,innerRadius,arcSizeInAngle,parseDate,xScale,yScale,data,chartStyles} = this.props;
+   render = () => {
+      var {widthFn,heightFn,margin,radius,innerRadius,arcSizeInAngle,parseDate,xScale,yScale,data,chartStyles} = this.props;
 
 
-    // Possible bug when you try to set the sacels via defaultProps. Needs further investigation    
-    //Scales worked out in 2 parts frts define scale, then map scale to domain of data
-//     easeElastic
-// easeBounce
-// easeLinear
-// easeSin
-// easeQuad
-// easeCubic
-// easePoly
-// easeCircle
-// easeExp
-// easeBack
+      // Possible bug when you try to set the sacels via defaultProps. Needs further investigation    
+      //Scales worked out in 2 parts frts define scale, then map scale to domain of data
 
-    xScale= d3.scaleBand().range([0, widthFn(margin)], .05);
+     xScale= d3.scaleBand().range([0, widthFn(margin)], .05);
     yScale=d3.scaleLinear().range([heightFn(margin), 0]);
     xScale.domain(data.map(function(d) { return d.date; }));
     yScale.domain([0, d3.max(data, function(d) { return d.value; })]);
@@ -70,12 +58,12 @@ export class DemoBarChart extends React.Component {
          {data.map(
                    (value, i ) => <Bar key={i}
                    value={value}
-               xScale={xScale}
-               yScale={yScale}
-               
-               height={heightFn(margin)}
-                chartStyles={this.props.chartStyles}
-                style={this.state.style}/>
+                   xScale={xScale}
+                   yScale={yScale}
+                   
+                   height={heightFn(margin)}
+                   chartStyles={this.props.chartStyles}
+                  style={this.state.style}/>
           )}
 
       </svg>
@@ -89,16 +77,9 @@ export class DemoBarChart extends React.Component {
 class Bar extends React.Component {
 
   componentDidMount() { 
-        // can initiate animation here
 
-            //     bar.transition()
-            // .duration(animationDuration)
-            // .attr("y", 0)
-            // .attr("height", height);
-   
-
-   this.update();
-   // this.interval = setInterval(() => {this.setState({chartStyle:Math.floor(Math.random() * 5)});}, 7000);        
+   // Manipulae the dom to achieve animaion via d3 transition
+   this.update();    
    }
 
   componentDidUpdate = (nextProps, nextState, nextContext) => {
@@ -111,6 +92,7 @@ class Bar extends React.Component {
  update =()=> {
     //: animation http://duspviz.mit.edu/d3-workshop/transitions-animation/
     // https://swizec.com/blog/using-d3js-transitions-in-react/swizec/6797
+    // dash board http://bl.ocks.org/diethardsteiner/3287802
     // Furher research in animation hooks for react
      var bar=d3.select(this.refs.bar).data([this.props.value])
                        .attr('y',500)
@@ -118,9 +100,20 @@ class Bar extends React.Component {
                        .attr('fill',this.props.chartStyles[this.props.style][0])
                        .transition()
                        .ease(d3.easeSin)  
-           .duration(1000).delay(Math.floor(Math.random() * 100) +500)
+           .duration(1000).delay(Math.floor(Math.random() * 500) +500)
            .attr("height", 500 - this.props.yScale(this.props.value.value))
            .attr("y", this.props.yScale(this.props.value.value));
+
+            // easeBounce
+            // easeLinear
+            // easeSin
+            // easeQuad
+            // easeCubic
+            // easePoly
+            // easeCircle
+            // easeExp
+            // easeBack
+            //ie  .transition().ease(d3.easeSin) 
 
  }
 
@@ -158,8 +151,6 @@ class Bar extends React.Component {
       yScale:PropTypes.func,
       color:PropTypes.func,
       chartStyles:PropTypes.array,
-
-
       data:PropTypes.array
 
                                 
