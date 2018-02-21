@@ -32,8 +32,8 @@ export class DemoBarChart extends React.Component {
 
   componentDidMount() {    
 
-    this.interval = setInterval(() => {this.setState({style:Math.floor(Math.random() * 4)});}, 15000);        
-   
+    this.interval = setInterval(() => {this.setState({style:Math.floor(Math.random() * this.props.chartStyles.length)});}, 15000); 
+
    }
 
    render = () => {
@@ -60,6 +60,7 @@ export class DemoBarChart extends React.Component {
                    value={value}
                    xScale={xScale}
                    yScale={yScale}
+                   i={i}
                    
                    height={heightFn(margin)}
                    chartStyles={this.props.chartStyles}
@@ -84,7 +85,7 @@ class Bar extends React.Component {
 
   componentDidUpdate = (nextProps, nextState, nextContext) => {
 
-  this.update();
+    this.update();
 
 
   }
@@ -94,13 +95,22 @@ class Bar extends React.Component {
     // https://swizec.com/blog/using-d3js-transitions-in-react/swizec/6797
     // dash board http://bl.ocks.org/diethardsteiner/3287802
     // Furher research in animation hooks for react
+
+     // this.colorScale = d3.interpolateHsl(d3.rgb(this.props.chartStyles[this.props.style][1][1]), d3.rgb(this.props.chartStyles[this.props.style][1][2]));
+     // TODO : Masking using clip path http://www.d3noob.org/2015/07/clipped-paths-in-d3js-aka-clippath.html
+
+     var {0:color1,1:color2,2:interval}=this.props.chartStyles[this.props.style][1]
+    
+   
+     this.colorScale = d3.interpolateHsl(d3.rgb(color1), d3.rgb(color2));
+
      var bar=d3.select(this.refs.bar).data([this.props.value])
                        .attr('y',500)
                        .attr('height',this.props.height)
-                       .attr('fill',this.props.chartStyles[this.props.style][0])
+                       .attr('fill',this.colorScale(interval*this.props.i))
                        .transition()
                        .ease(d3.easeSin)  
-           .duration(1000).delay(Math.floor(Math.random() * 500) +500)
+           .duration(500).delay(Math.floor(Math.random() * 500) +500)
            .attr("height", 500 - this.props.yScale(this.props.value.value))
            .attr("y", this.props.yScale(this.props.value.value));
 
@@ -147,8 +157,8 @@ class Bar extends React.Component {
       margin:PropTypes.object,
       width:PropTypes.func,
       height:PropTypes.func,
-      xScale:PropTypes.func,
-      yScale:PropTypes.func,
+      // xScale:PropTypes.func,
+      // yScale:PropTypes.func,
       color:PropTypes.func,
       chartStyles:PropTypes.array,
       data:PropTypes.array
@@ -173,10 +183,12 @@ class Bar extends React.Component {
       color: d3.schemeCategory10,
       parseDate: (date) => {return d3.timeParse("%Y-%m").parse},
       chartStyles:[ 
-        ['silver','gold','green','blue'],
-        ['gold','gold','green','blue'],
-        ['lightblue','gold','green','blue'],
-        ['green','gold','green','blue']
+        ['silver',['#00ff11','#fbff00',0.25],'green','blue'],
+        ['gold',['#e8e2ca','#3e6c0a',0.05],'gold','green','blue'],
+        ['lightblue',['#00ff11','#fbff00',0.25],'gold','green','blue'],
+        ['green',['#0a4c6b','#0084ff',0.05],'gold','green','blue'],
+        ['green',['#ffcc00','#9dff00',0.05],'gold','green','blue'],
+        ['green',['#ffd500','#ff8c00',0.05],'gold','green','blue']
       ],
       data: [
        {

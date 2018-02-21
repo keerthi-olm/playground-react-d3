@@ -59,6 +59,7 @@ class Pie extends React.Component {
     super(props);
     // https://github.com/d3/d3/wiki/Ordinal-Scales#category10
     this.colorScale = d3.interpolateHsl(d3.rgb('#e8e2ca'), d3.rgb('#3e6c0a'));
+    // this.colorScale = d3.interpolateHsl(d3.rgb('#ff0000'), d3.rgb('#000dff'))
     // This sets the radius of the pie chart to fit within
     // the current window size, with some additional padding
      let minViewportSize = Math.min(this.props.conf.width, this.props.conf.height);// move up
