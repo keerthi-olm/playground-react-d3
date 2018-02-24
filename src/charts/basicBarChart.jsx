@@ -42,7 +42,7 @@ export class SingleBarChart extends React.Component {
         <g transform={`translate(${margin.left} ,${margin.top})`}>
 
         </g>       {/* Put the image that is to be clipped here*/}           
-        <rect id="img-1" class='svg-image' width={widthFn(margin)} height={heightFn(margin)} style={{fill: 'green' , clipPath: 'url(#clip-barChart)'}} />
+        <rect id="img-1" class='svg-image' width={widthFn(margin)} height={heightFn(margin)} style={{fill: 'orange' , clipPath: 'url(#clip-barChart)'}} />
       <defs> {/* Mask */}   
             <clipPath id="clip-barChart">
          {data.map(
