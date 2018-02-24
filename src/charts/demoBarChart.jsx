@@ -18,7 +18,7 @@ export class DemoBarChart extends React.Component {
   }
 
   componentWillMount() {
-    var parseDate = d3.timeParse("%Y-%m");  //TRICKY : he parmeter for timeParse function is the forma of the date sring that is to be parsed
+    var parseDate = d3.timeParse("%Y-%m");  //TRICKY : the parmeter for timeParse function is of the format of the date string that is to be parsed
             this.props.data.forEach(function(d) {
 
               if (!(d.date instanceof Date)) {
@@ -97,7 +97,7 @@ class Bar extends React.Component {
     // Furher research in animation hooks for react
 
      // this.colorScale = d3.interpolateHsl(d3.rgb(this.props.chartStyles[this.props.style][1][1]), d3.rgb(this.props.chartStyles[this.props.style][1][2]));
-     // TODO : Masking using clip path http://www.d3noob.org/2015/07/clipped-paths-in-d3js-aka-clippath.html
+     // TODO : Masking using clip path https://css-tricks.com/almanac/properties/c/clip/https://jsfiddle.net/2wu0dwrL/  ------ http://www.d3noob.org/2015/07/clipped-paths-in-d3js-aka-clippath.html
 
      var {0:color1,1:color2,2:interval}=this.props.chartStyles[this.props.style][1]
     

@@ -29,6 +29,7 @@ export class SingleBarChart extends React.Component {
 // easeCircle
 // easeExp
 // easeBack
+
     xScale= d3.scaleBand().range([0, widthFn(margin)], .05);
     yScale=d3.scaleLinear().range([heightFn(margin), 0]);
     xScale.domain(data.map(function(d) { return d.date; }));
@@ -40,7 +41,9 @@ export class SingleBarChart extends React.Component {
 
         <g transform={`translate(${margin.left} ,${margin.top})`}>
 
-        </g>
+        </g>                  <rect id="img-1" class='svg-image' width="300" height="300" style={{backgroundColor: 'green' , clipPath: 'url(#clip-barChart)'}} />
+      <defs>
+            <clipPath id="clip-barChart">
          {data.map(
                    (value, i ) => <Bar 
                    value={value}
@@ -48,7 +51,8 @@ export class SingleBarChart extends React.Component {
                yScale={yScale}
                fill={this.colorScale(0.05*1)} />
           )}
-
+                  </clipPath>
+        </defs>
       </svg>
     );
   }

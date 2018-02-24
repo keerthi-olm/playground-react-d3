@@ -182,7 +182,7 @@ class Pointer extends React.Component {
                             .attr('class', 'pointer')
                             .attr('transform', 'translate(' + this.props.pieHeight /2 + ',' + this.props.pieWidth / 2 + ')')
                             .style("fill", 'red')
-                            .style("stroke", "red").append('path').attr('d', this.pointerLine);
+                            .style("stroke", "red").style('stroke-linejoin',"round").append('path').attr('d', this.pointerLine);
    this.update(this.state.value);
    this.interval = setInterval(() => {this.setState({value:Math.floor(Math.random() * 10)});}, 7000);
   }
