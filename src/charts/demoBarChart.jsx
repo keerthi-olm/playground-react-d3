@@ -6,6 +6,7 @@ import * as d3 from "d3";
 //http://bl.ocks.org/d3noob/8952219
 //https://plnkr.co/edit/WjmCzZ?p=preview
 //C:\Temp\react-d3-current-28-01-2018\src
+//----------------------------------------
 export class DemoBarChart extends React.Component {   
    constructor(props) { 
   
