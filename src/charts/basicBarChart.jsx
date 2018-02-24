@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import * as d3 from "d3";
+import flagPng from './flag.png';
+import flagPng2 from './flag2.png';
 
 //http://bl.ocks.org/d3noob/8952219
 //https://plnkr.co/edit/WjmCzZ?p=preview
@@ -30,7 +32,7 @@ export class SingleBarChart extends React.Component {
 // easeExp
 // easeBack
 
-    xScale= d3.scaleBand().range([0, widthFn(margin)], .05);
+    xScale= d3.scaleBand().range([0, widthFn(margin)], .05).padding(0.1);
     yScale=d3.scaleLinear().range([heightFn(margin), 0]);
     xScale.domain(data.map(function(d) { return d.date; }));
     yScale.domain([0, d3.max(data, function(d) { return d.value; })]);
@@ -41,9 +43,11 @@ export class SingleBarChart extends React.Component {
 
         <g transform={`translate(${margin.left} ,${margin.top})`}>
 
-        </g>       {/* Put the image that is to be clipped here*/}           
-        <rect id="img-1" class='svg-image' width={widthFn(margin)} height={heightFn(margin)} style={{fill: 'orange' , clipPath: 'url(#clip-barChart)'}} />
-      <defs> {/* Mask */}   
+        </g>       {/* Put the image that is to be clipped here and set the clip path attribute*/} 
+        <image  width={widthFn(margin)} height={heightFn(margin)} href={flagPng2} />          
+        <image  width={widthFn(margin)} height={heightFn(margin)} href={flagPng} clipPath = {'url(#clip-barChart)'} />
+           {/* Use <defs> to deine reusable framents of svg tags*/} 
+        <defs> {/* Mask */}   
             <clipPath id="clip-barChart">
          {data.map(
                    (value, i ) => <Bar 
@@ -54,6 +58,8 @@ export class SingleBarChart extends React.Component {
           )}
                   </clipPath>
         </defs>
+
+
       </svg>
     );
   }
@@ -76,10 +82,14 @@ class Bar extends React.Component {
                        .attr('y',500)
                        .attr('height',500)
                        .transition()
-                       .ease(d3.easeElastic)  
+                       .ease(d3.easeLinear)  
            .duration(3000).delay(1000)
            .attr("height", 500 - this.props.yScale(this.props.value.value))
            .attr("y", this.props.yScale(this.props.value.value));
+
+           // TODO info graphics : turn data value  into array of value size then draw image
+           // ie coins for evry unit into array then var N = 10;  Array.apply(null, {length: N}).map(Number.call, Number)
+           // Charts using grid : https://codepen.io/robinrendle/pen/470df4328fc964a0fc358395105d2a
              
    }
 
