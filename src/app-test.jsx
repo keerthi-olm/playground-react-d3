@@ -6,6 +6,7 @@ import ReactSpeedometer from './charts/SpeedO'
 import SingleArc from './charts/singleArc'
 import SingleBarChart from './charts/basicBarChart'
 import DemoBarChart from './charts/demoBarChart'
+import InfoGraphicsChart from './charts/basicInfoGraphics'
 
 
 class App extends Component {
@@ -19,12 +20,15 @@ class App extends Component {
                     <LineChart/>
                     <PieBasicChart/>
                     <DialChart/>
+
                     <DemoBarChart/>
+                    
                     <SingleBarChart/>
+                    <InfoGraphicsChart />
                     <ReactSpeedometer/>
 
                     <SingleArc />
-                    
+                     
                 </div>
             </div>
             </div>

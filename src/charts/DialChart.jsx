@@ -96,7 +96,8 @@ class Slice extends React.Component {
             .transition()
             .duration(2000)
             .attrTween("d", function (d) { 
-                var start = {startAngle: 0, endAngle: 0};
+                var start = {startAngle: (-0.5 * Math.PI), endAngle: (0.5 * Math.PI)};
+               //  var start = {startAngle: 0 , endAngle: 0}; // Play around with start and end angles 0 0 strats at top
                 var interpolate = d3.interpolate(start, d);
                 return function (t) {
                     return arc(interpolate(t));

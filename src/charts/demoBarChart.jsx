@@ -106,13 +106,13 @@ class Bar extends React.Component {
      this.colorScale = d3.interpolateHsl(d3.rgb(color1), d3.rgb(color2));
 
      var bar=d3.select(this.refs.bar).data([this.props.value])
-                       .attr('y',500)
+                       .attr('y',210)
                        .attr('height',this.props.height)
                        .attr('fill',this.colorScale(interval*this.props.i))
                        .transition()
                        .ease(d3.easeSin)  
            .duration(500).delay(Math.floor(Math.random() * 500) +500)
-           .attr("height", 500 - this.props.yScale(this.props.value.value))
+           .attr("height", 210 - this.props.yScale(this.props.value.value))
            .attr("y", this.props.yScale(this.props.value.value));
 
             // easeBounce
