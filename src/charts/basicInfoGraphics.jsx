@@ -32,10 +32,11 @@ export class InfoGraphicsChart extends React.Component {
 // easeBack
 
     xScale= d3.scaleBand().range([0, widthFn(margin)], .05).padding(0.1);
-    yScale=d3.scaleLinear().range([heightFn(margin), 0]);
+    yScale= d3.scaleBand().range([0, heightFn(margin)], .05).padding(0.1);
+    // yScale=d3.scaleLinear().range([heightFn(margin), 0]);
     xScale.domain(data.map(function(d) { return d.date; }));
-    yScale.domain([0, d3.max(data, function(d) { return d.value; })]);
-   
+     // yScale.domain([0, d3.max(data, function(d) { return d.value; })]);
+   yScale.domain(data.map(function(d) { return d.value; }));
     return (
       <svg width= {widthFn(margin)} height={heightFn(margin)} >
         {/* formula for dgerees to rads :::->  deg * Math.PI / 180 */}
@@ -125,24 +126,54 @@ class InfoGraphic extends React.Component {
        
           }
     render = () => {
-       var buffer = []
-for (var i = this.props.value.value ; i >= 0; i--) {
-          buffer.push(<div>AAA</div>);
-        buffer.push(<div>BBB</div>);
-        buffer.push(<div>C</div>);
-};
+      var test="M 92.699987,165.8522 C 41.510531,165.8522 -3.4112195e-8,157.23722 -3.4112195e-8,146.6076 v 19.2446 C -3.4112195e-8,176.49194 41.510531,185.10692 92.699987,185.10692 c 51.208943,0 92.719473,-8.61498 92.719473,-19.25472 v -19.2446 c -0.0167,10.62962 -41.51053,19.2446 -92.719473,19.2446 z";
+
+//        var buffer = []
+// for (var i = this.props.value.value ; i >= 0; i--) {
+//           buffer.push(<div>AAA</div>);
+//         buffer.push(<div>BBB</div>);
+//         buffer.push(<div>C</div>);
+// };
+var width,height;
+var svgTags=this.svgStack(test,width=this.props.xScale.bandwidth(this.props.value.date),height=this.props.yScale.bandwidth(this.props.value.value));
 
 
 
-return (  <svg > <path d="M 92.699987,165.8522 C 41.510531,165.8522 -3.4112195e-8,157.23722 -3.4112195e-8,146.6076 v 19.2446 C -3.4112195e-8,176.49194 41.510531,185.10692 92.699987,185.10692 c 51.208943,0 92.719473,-8.61498 92.719473,-19.25472 v -19.2446 c -0.0167,10.62962 -41.51053,19.2446 -92.719473,19.2446 z">
-  </path><path d="M 92.699987,165.8522 C 41.510531,165.8522 -3.4112195e-8,157.23722 -3.4112195e-8,146.6076 v 19.2446 C -3.4112195e-8,176.49194 41.510531,185.10692 92.699987,185.10692 c 51.208943,0 92.719473,-8.61498 92.719473,-19.25472 v -19.2446 c -0.0167,10.62962 -41.51053,19.2446 -92.719473,19.2446 z" transform="translate(0 -105)"></path>
-</svg>
+return (  <svg>{svgTags}</svg>
   )
 
+// return (  <svg x={this.props.xScale(this.props.value.date)} 
+// height={this.props.yScale(this.props.value.value)} 
+//   width={this.props.xScale.bandwidth(this.props.value.date)}> <path d={test} transform= "translate(0 0)"></path>
+// </svg>
+//   )
 
+//tips : Template literals  ::-->   `string text ${expression} string text`   ""  
     }
+svgStack (test,width,height) { console.log(width+'------>>>>>>>>>>'+height);
+                   var buffer = []
+       
+                  buffer.push(<svg width={width} x={this.props.xScale(this.props.value.date)}> {this.coins(test,width,height)}</svg>);
+                  return buffer
+
+
+      }
+
+      coins (test,width,height) { console.log(width+'------>>>>>>>>>>'+height);
+                   var buffer = [],yValue=170;
+        for (var i = 0 ; i <= this.props.value.value; i++) {
+                  // yValue=yValue-((this.props.value.value-i)*height);      
+                  buffer.push(<svg width="100%" height="38.499321" viewBox="0 0 185.41946 38.49932" y={this.props.yScale(i)} preserveAspectRatio="xMinyMin meet"> {this.coinsData(test,width,height)}</svg>);
+
+        };
+        return buffer
+      }
+      coinsData (test,width,height) {  return ( <g transform="translate(3.4112195e-8,-116.6076)" id="g3053"><path d="M 92.699987,165.8522 C 41.510531,165.8522 -3.4112195e-8,157.23722 -3.4112195e-8,146.6076 v 19.2446 C -3.4112195e-8,176.49194 41.510531,185.10692 92.699987,185.10692 c 51.208943,0 92.719473,-8.61498 92.719473,-19.25472 v -19.2446 c -0.0167,10.62962 -41.51053,19.2446 -92.719473,19.2446 z" id="path3103"  /></g>
+  )
+      }
 
   }
+
 
     InfoGraphicsChart.propTypes = {
       width:PropTypes.number,
