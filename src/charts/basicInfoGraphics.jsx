@@ -30,13 +30,15 @@ export class InfoGraphicsChart extends React.Component {
 // easeCircle
 // easeExp
 // easeBack
-
+var N = d3.max(data, function(d) { return d.value; }); 
+var domain=Array.apply(null, {length: N}).map(Number.call, Number);
+domain.shift();
     xScale= d3.scaleBand().range([0, widthFn(margin)], .05).padding(0.1);
     yScale= d3.scaleBand().range([0, heightFn(margin)], .05).padding(0.1);
     // yScale=d3.scaleLinear().range([heightFn(margin), 0]);
     xScale.domain(data.map(function(d) { return d.date; }));
      // yScale.domain([0, d3.max(data, function(d) { return d.value; })]);
-   yScale.domain(data.map(function(d) { return d.value; }));
+   yScale.domain(domain.reverse());
     return (
       <svg width= {widthFn(margin)} height={heightFn(margin)} >
         {/* formula for dgerees to rads :::->  deg * Math.PI / 180 */}
@@ -151,9 +153,9 @@ return (  <svg>{svgTags}</svg>
 //tips : Template literals  ::-->   `string text ${expression} string text`   ""  
     }
 svgStack (test,width,height) { console.log(width+'------>>>>>>>>>>'+height);
-                   var buffer = []
+                   var buffer = [], vb="0 0 "+width+" "+this.props.yScale(this.props.value.value);
        
-                  buffer.push(<svg width={width} x={this.props.xScale(this.props.value.date)}> {this.coins(test,width,height)}</svg>);
+                  buffer.push(<svg width={width} x={this.props.xScale(this.props.value.date)} viewBox={vb}> {this.coins(test,width,height)}</svg>);
                   return buffer
 
 
@@ -161,7 +163,7 @@ svgStack (test,width,height) { console.log(width+'------>>>>>>>>>>'+height);
 
       coins (test,width,height) { console.log(width+'------>>>>>>>>>>'+height);
                    var buffer = [],yValue=170;
-        for (var i = 0 ; i <= this.props.value.value; i++) {
+        for (var i = 1 ; i <= this.props.value.value; i++) {
                   // yValue=yValue-((this.props.value.value-i)*height);      
                   buffer.push(<svg width="100%" height="38.499321" viewBox="0 0 185.41946 38.49932" y={this.props.yScale(i)} preserveAspectRatio="xMinyMin meet"> {this.coinsData(test,width,height)}</svg>);
 
