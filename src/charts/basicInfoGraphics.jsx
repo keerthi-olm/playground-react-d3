@@ -38,7 +38,7 @@ domain.shift();
     // yScale=d3.scaleLinear().range([heightFn(margin), 0]);
     xScale.domain(data.map(function(d) { return d.date; }));
      // yScale.domain([0, d3.max(data, function(d) { return d.value; })]);
-   yScale.domain(domain.reverse());
+   yScale.domain(domain);
     return (
       <svg width= {widthFn(margin)} height={heightFn(margin)} >
         {/* formula for dgerees to rads :::->  deg * Math.PI / 180 */}
@@ -155,7 +155,7 @@ return (  <svg>{svgTags}</svg>
 svgStack (test,width,height) { console.log(width+'------>>>>>>>>>>'+height);
                    var buffer = [], vb="0 0 "+width+" "+this.props.yScale(this.props.value.value);
        
-                  buffer.push(<svg width={width} x={this.props.xScale(this.props.value.date)} viewBox={vb}> {this.coins(test,width,height)}</svg>);
+                  buffer=this.coins(test,width,height);
                   return buffer
 
 
@@ -165,7 +165,7 @@ svgStack (test,width,height) { console.log(width+'------>>>>>>>>>>'+height);
                    var buffer = [],yValue=170;
         for (var i = 1 ; i <= this.props.value.value; i++) {
                   // yValue=yValue-((this.props.value.value-i)*height);      
-                  buffer.push(<svg width="100%" height="38.499321" viewBox="0 0 185.41946 38.49932" y={this.props.yScale(i)} preserveAspectRatio="xMinyMin meet"> {this.coinsData(test,width,height)}</svg>);
+                  buffer.push(<svg x={this.props.xScale(this.props.value.date)} width={width} height="45" viewBox="0 0 185.41946 38.49932" y={(180-height)-this.props.yScale(i)} > {this.coinsData(test,width,height)}</svg>);
 
         };
         return buffer
@@ -214,72 +214,41 @@ svgStack (test,width,height) { console.log(width+'------>>>>>>>>>>'+height);
       data: [
        {
          "date": "2013-01",
-         "value": "53"
+         "value": "2"
        },
        {
          "date": "2013-02",
-         "value": "165"
+         "value": "5"
        },
        {
          "date": "2013-03",
-         "value": "269"
+         "value": "10"
        },
        {
          "date": "2013-01",
-         "value": "53"
+         "value": "17"
        },
        {
          "date": "2013-02",
-         "value": "165"
+         "value": "16"
        },
        {
          "date": "2013-03",
-         "value": "269"
+         "value": "12"
        },
        {
          "date": "2013-04",
-         "value": "344"
+         "value": "11"
        },
        {
          "date": "2013-05",
-         "value": "376"
+         "value": "13"
        },
        {
          "date": "2013-06",
-         "value": "410"
+         "value": "3"
        },
-       {
-         "date": "2013-07",
-         "value": "421"
-       },
-       {
-         "date": "2013-08",
-         "value": "405"
-       },
-       {
-         "date": "2013-09",
-         "value": "376"
-       },
-       {
-         "date": "2013-10",
-         "value": "359"
-       },
-       {
-         "date": "2013-11",
-         "value": "392"
-       },
-       {
-         "date": "2013-12",
-         "value": "433"
-       },
-       {
-         "date": "2014-01",
-         "value": "455"
-       },
-       {
-         "date": "2014-02",
-         "value": "478"
-       }
+      
       ]
            
 
