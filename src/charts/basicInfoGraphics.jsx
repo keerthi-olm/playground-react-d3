@@ -34,7 +34,7 @@ var N = d3.max(data, function(d) { return d.value; });
 var domain=Array.apply(null, {length: N}).map(Number.call, Number);
 domain.shift();
     xScale= d3.scaleBand().range([0, widthFn(margin)], .05).padding(0.1);
-    yScale= d3.scaleBand().range([0, heightFn(margin)], .05).padding(0.1);
+    yScale= d3.scaleBand().range([0, heightFn(margin)], .01).padding(0.1);
     // yScale=d3.scaleLinear().range([heightFn(margin), 0]);
     xScale.domain(data.map(function(d) { return d.date; }));
      // yScale.domain([0, d3.max(data, function(d) { return d.value; })]);
@@ -162,16 +162,30 @@ svgStack (test,width,height) { console.log(width+'------>>>>>>>>>>'+height);
       }
 
       coins (test,width,height) { console.log(width+'------>>>>>>>>>>'+height);
-                   var buffer = [],yValue=170;
+                   var buffer = [],yValue=170,top=0,vb,height=28;
+
         for (var i = 1 ; i <= this.props.value.value; i++) {
-                  // yValue=yValue-((this.props.value.value-i)*height);      
-                  buffer.push(<svg x={this.props.xScale(this.props.value.date)} width={width} height="45" viewBox="0 0 185.41946 38.49932" y={(180-height)-this.props.yScale(i)} > {this.coinsData(test,width,height)}</svg>);
+                  // yValue=yValue-((this.props.value.value-i)*height); 
+                  if (i=== this.props.value.value) { top=1,height=20}
+
+                    top===1 ?  vb = "0 0 185.41946 38.4993" : vb = "0 0 185.41946 38.4993" ;
+                  buffer.push(<svg x={this.props.xScale(this.props.value.date)} width={width} height={height} viewBox={vb} y={(120-height)-this.props.yScale(i)} > {this.coinsData(test,width,height,top)}</svg>);
 
         };
         return buffer
       }
-      coinsData (test,width,height) {  return ( <g transform="translate(3.4112195e-8,-116.6076)" id="g3053"><path d="M 92.699987,165.8522 C 41.510531,165.8522 -3.4112195e-8,157.23722 -3.4112195e-8,146.6076 v 19.2446 C -3.4112195e-8,176.49194 41.510531,185.10692 92.699987,185.10692 c 51.208943,0 92.719473,-8.61498 92.719473,-19.25472 v -19.2446 c -0.0167,10.62962 -41.51053,19.2446 -92.719473,19.2446 z" id="path3103"  /></g>
-  )
+      coinsData (test,width,height,top) {  
+if (top) {
+  return ( <g transform="translate(3.4112195e-8,-116.6076)" id="g3053"><path
+     d="m 92.629131,101.875 c -51.358536,0 -93.0061726,8.52363 -93.0061726,19.04627 v 19.05054 c 0,10.53121 41.6476366,19.04626 93.0061726,19.04626 51.378069,0 93.025729,-8.52363 93.025729,-19.04626 V 120.92127 C 185.63811,110.39863 144.0072,101.875 92.629131,101.875 z m 0,33.3381 c -51.096001,0 -83.6974565,-8.46357 -83.6974565,-14.29183 0,-5.834 32.6014555,-14.28327 83.6974565,-14.28327 51.112739,0 83.714229,8.44927 83.714229,14.28327 -0.0168,5.82826 -32.61824,14.29183 -83.714229,14.29183 z"
+     id="path3105-4-1" /></g>)
+} else
+  {
+return ( <g transform="translate(3.4112195e-8,-116.6076)" id="g3053"><path d="M 92.699987,165.8522 C 41.510531,165.8522 -3.4112195e-8,157.23722 -3.4112195e-8,146.6076 v 19.2446 C -3.4112195e-8,176.49194 41.510531,185.10692 92.699987,185.10692 c 51.208943,0 92.719473,-8.61498 92.719473,-19.25472 v -19.2446 c -0.0167,10.62962 -41.51053,19.2446 -92.719473,19.2446 z" id="path3103"  /></g>)
+
+  }
+        
+  
       }
 
   }
@@ -203,7 +217,7 @@ svgStack (test,width,height) { console.log(width+'------>>>>>>>>>>'+height);
     // }
     InfoGraphicsChart.defaultProps = {
     
-      margin:{top: 20, right: 20, bottom: 70, left: 40},
+      margin:{top: 80, right: 20, bottom: 50, left: 40},
       widthFn: (margin) => {return 600 - margin.left - margin.right},
       heightFn: (margin) => {return 300 - margin.top - margin.bottom},
       // xScale: ((widthFn) => {return d3.scaleBand().range([0, widthFn], .05);})(),
@@ -225,27 +239,27 @@ svgStack (test,width,height) { console.log(width+'------>>>>>>>>>>'+height);
          "value": "10"
        },
        {
-         "date": "2013-01",
-         "value": "17"
-       },
-       {
-         "date": "2013-02",
-         "value": "16"
-       },
-       {
-         "date": "2013-03",
-         "value": "12"
-       },
-       {
          "date": "2013-04",
-         "value": "11"
+         "value": "19"
        },
        {
          "date": "2013-05",
-         "value": "13"
+         "value": "16"
        },
        {
          "date": "2013-06",
+         "value": "12"
+       },
+       {
+         "date": "2013-07",
+         "value": "11"
+       },
+       {
+         "date": "2013-08",
+         "value": "13"
+       },
+       {
+         "date": "2013-09",
          "value": "3"
        },
       
