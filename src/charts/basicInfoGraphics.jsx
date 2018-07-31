@@ -128,7 +128,7 @@ class InfoGraphic extends React.Component {
        
           }
     render = () => {
-      var test="M 92.699987,165.8522 C 41.510531,165.8522 -3.4112195e-8,157.23722 -3.4112195e-8,146.6076 v 19.2446 C -3.4112195e-8,176.49194 41.510531,185.10692 92.699987,185.10692 c 51.208943,0 92.719473,-8.61498 92.719473,-19.25472 v -19.2446 c -0.0167,10.62962 -41.51053,19.2446 -92.719473,19.2446 z";
+     
 
 //        var buffer = []
 // for (var i = this.props.value.value ; i >= 0; i--) {
@@ -137,7 +137,7 @@ class InfoGraphic extends React.Component {
 //         buffer.push(<div>C</div>);
 // };
 var width,height;
-var svgTags=this.svgStack(test,width=this.props.xScale.bandwidth(this.props.value.date),height=this.props.yScale.bandwidth(this.props.value.value));
+var svgTags=this.svgStack(width=this.props.xScale.bandwidth(this.props.value.date),height=this.props.yScale.bandwidth(this.props.value.value));
 
 
 
@@ -152,16 +152,16 @@ return (  <svg>{svgTags}</svg>
 
 //tips : Template literals  ::-->   `string text ${expression} string text`   ""  
     }
-svgStack (test,width,height) { console.log(width+'------>>>>>>>>>>'+height);
+svgStack (width,height) { console.log(width+'------>>>>>>>>>>'+height);
                    var buffer = [], vb="0 0 "+width+" "+this.props.yScale(this.props.value.value);
        
-                  buffer=this.coins(test,width,height);
+                  buffer=this.coins(width,height);
                   return buffer
 
 
       }
 
-      coins (test,width,height) { console.log(width+'------>>>>>>>>>>'+height);
+      coins (width,height) { console.log(width+'------>>>>>>>>>>'+height);
                    var buffer = [],yValue=170,top=0,vb,height=28;
 
         for (var i = 1 ; i <= this.props.value.value; i++) {
@@ -169,12 +169,12 @@ svgStack (test,width,height) { console.log(width+'------>>>>>>>>>>'+height);
                   if (i=== this.props.value.value) { top=1,height=20}
 
                     top===1 ?  vb = "0 0 185.41946 38.4993" : vb = "0 0 185.41946 38.4993" ;
-                  buffer.push(<svg x={this.props.xScale(this.props.value.date)} width={width} height={height} viewBox={vb} y={(120-height)-this.props.yScale(i)} > {this.coinsData(test,width,height,top)}</svg>);
+                  buffer.push(<svg x={this.props.xScale(this.props.value.date)} width={width} height={height} viewBox={vb} y={(120-height)-this.props.yScale(i)} > {this.coinsData(width,height,top)}</svg>);
 
         };
         return buffer
       }
-      coinsData (test,width,height,top) {  
+      coinsData (width,height,top) {  
 if (top) {
   return ( <g transform="translate(3.4112195e-8,-116.6076)" id="g3053"><path
      d="m 92.629131,101.875 c -51.358536,0 -93.0061726,8.52363 -93.0061726,19.04627 v 19.05054 c 0,10.53121 41.6476366,19.04626 93.0061726,19.04626 51.378069,0 93.025729,-8.52363 93.025729,-19.04626 V 120.92127 C 185.63811,110.39863 144.0072,101.875 92.629131,101.875 z m 0,33.3381 c -51.096001,0 -83.6974565,-8.46357 -83.6974565,-14.29183 0,-5.834 32.6014555,-14.28327 83.6974565,-14.28327 51.112739,0 83.714229,8.44927 83.714229,14.28327 -0.0168,5.82826 -32.61824,14.29183 -83.714229,14.29183 z"
