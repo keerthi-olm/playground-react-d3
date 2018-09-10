@@ -156,3 +156,13 @@ h3{
     color:rgb(125, 199, 244);
 
 }
+
+/** basic bar chart **/
+  .basicbar.shadow { -webkit-filter: drop-shadow(12px 12px 7px rgba(0,0,0,0.5));      
+    filter: drop-shadow(-12px -12px 7px rgba(0,0,0,0.5));
+}
+
+/** Coin info graphics  **/
+.coin {fill:gold;}
+path.body {fill:black;}
+path.hair{fill:black}

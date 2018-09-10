@@ -2,60 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import * as d3 from "d3";
+import {Axis,Grid} from '../charts/ChartTools'
 
 // http://www.adeveloperdiary.com/react-js/integrate-react-and-d3/
 
-class Axis extends React.Component {
-    static propTypes = {
-        h:PropTypes.number,
-        axis:PropTypes.func,
-        axisType:PropTypes.oneOf(['x','y'])
-
-    }
-
-    componentDidUpdate () { this.renderAxis(); }
-    componentDidMount  () { this.renderAxis(); }
-    renderAxis () {
-        var node = ReactDOM.findDOMNode(this);
-        d3.select(node).call(this.props.axis);
-
-    }
-    render (){
-    // var xmytest=33;
-            var translate = "translate(0,"+(this.props.h)+")";
-
-            return (
-                <g className="axis" transform={this.props.axisType==='x'?translate:""} >
-                </g>
-            );
-        }
-
-    }
-
-class Grid extends React.Component{
-    static propTypes = {
-        h:PropTypes.number,
-        grid:PropTypes.func,
-        gridType:PropTypes.oneOf(['x','y'])
-    }
-
-    componentDidUpdate () { this.renderGrid(); }
-    componentDidMount () { this.renderGrid(); }
-
-    renderGrid () {
-    var node = ReactDOM.findDOMNode(this);
-    d3.select(node).call(this.props.grid);
-
-    }
-    render () {
-        var translate = "translate(0,"+(this.props.h)+")";
-        return (
-            <g className="y-grid" transform={this.props.gridType==='x'?translate:""}>
-            </g>
-        );
-    }
-
-}
 
 class ToolTip extends React.Component{ 
     static propTypes = {
@@ -294,16 +244,6 @@ export class LineChart extends React.Component {
         chartId: 'v1_chart',
         margin:{top: 5, right: 50, bottom: 20, left: 50},
         data: [
-            {day:'02-11-2016',count:80},
-            {day:'02-12-2016',count:250},
-            {day:'02-13-2016',count:150},
-            {day:'02-14-2016',count:496},
-            {day:'02-15-2016',count:140},
-            {day:'02-16-2016',count:380},
-            {day:'02-17-2016',count:100},
-            {day:'02-18-2016',count:150}
-        ],
-        data2: [
             {day:'02-11-2016',count:80},
             {day:'02-12-2016',count:250},
             {day:'02-13-2016',count:150},

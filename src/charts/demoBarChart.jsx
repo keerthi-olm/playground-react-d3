@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import * as d3 from "d3";
+import {Axis,Grid} from './ChartTools'
 
 //http://bl.ocks.org/d3noob/8952219
 //https://plnkr.co/edit/WjmCzZ?p=preview
@@ -48,14 +49,30 @@ export class DemoBarChart extends React.Component {
     yScale=d3.scaleLinear().range([heightFn(margin), 0]);
     xScale.domain(data.map(function(d) { return d.date; }));
     yScale.domain([0, d3.max(data, function(d) { return d.value; })]);
-   
+    
+        var w = widthFn(margin),
+            h = heightFn(margin);
+ 
+     var y = d3.scaleLinear()
+            .domain([0,d3.max(data,function(d){
+                return d.value;
+            })])
+            .range([h, 0]);
+
+
+        var yGrid = d3.axisLeft()
+            .scale(y)
+            .ticks(5)
+            .tickSize(-w, 0, 0)
+            .tickFormat("");
     return (
-      <svg width= {widthFn(margin)} height={heightFn(margin)} >
+      <svg width= {widthFn(margin)} height={heightFn(margin)} className='basicbar shadow' >
         {/* formula for dgerees to rads :::->  deg * Math.PI / 180 */}
 
         <g transform={`translate(${margin.left} ,${margin.top})`}>
 
         </g>
+        <Grid h={h} grid={yGrid} gridType="y"/>
          {data.map(
                    (value, i ) => <Bar key={i}
                    value={value}
@@ -138,7 +155,7 @@ class Bar extends React.Component {
     // d3.selectAll(this.refs.bar).remove();
 
     return (
-      <rect ref='bar'
+      <rect ref='bar' className='bar'
       key={this.props.i}
           x={xScale(value.date)}
           y={0}
