@@ -4,9 +4,11 @@ import DialChart from './charts/DialChart'
 import PieBasicChart from './charts/pieBasic'
 import ReactSpeedometer from './charts/SpeedO'
 import SingleArc from './charts/singleArc'
-import SingleBarChart from './charts/basicBarChart'
+import SingleBarChart from './charts/basicClipedBarChart'
 import DemoBarChart from './charts/demoBarChart'
 import InfoGraphicsChart from './charts/basicInfoGraphics'
+import './style.css'
+
 
 
 class App extends Component {

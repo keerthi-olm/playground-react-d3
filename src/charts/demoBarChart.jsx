@@ -2,12 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import * as d3 from "d3";
-import {Axis,Grid} from './ChartTools'
+import {Axis,Grid} from './ChartTools';
+import chartDefaults from '../charts/utils/simpleChartDefaults'
+import playBtn from '../charts/utils/playBtn.svg'
 
-//http://bl.ocks.org/d3noob/8952219
-//https://plnkr.co/edit/WjmCzZ?p=preview
-//C:\Temp\react-d3-current-28-01-2018\src
-//----------------------------------------
+
 export class DemoBarChart extends React.Component {   
    constructor(props) { 
   
@@ -33,8 +32,8 @@ export class DemoBarChart extends React.Component {
   }
 
   componentDidMount() {    
-
-    this.interval = setInterval(() => {this.setState({style:Math.floor(Math.random() * this.props.chartStyles.length)});}, 15000); 
+    //This picks a random colour scheme from chartstyles array and changes the state
+    //this.interval = setInterval(() => {this.setState({style:Math.floor(Math.random() * this.props.chartStyles.length)});}, 15000); 
 
    }
 
@@ -45,7 +44,7 @@ export class DemoBarChart extends React.Component {
       // Possible bug when you try to set the sacels via defaultProps. Needs further investigation    
       //Scales worked out in 2 parts frts define scale, then map scale to domain of data
 
-     xScale= d3.scaleBand().range([0, widthFn(margin)], .05);
+    xScale= d3.scaleBand().range([0, widthFn(margin)], .05);
     yScale=d3.scaleLinear().range([heightFn(margin), 0]);
     xScale.domain(data.map(function(d) { return d.date; }));
     yScale.domain([0, d3.max(data, function(d) { return d.value; })]);
@@ -65,8 +64,9 @@ export class DemoBarChart extends React.Component {
             .ticks(5)
             .tickSize(-w, 0, 0)
             .tickFormat("");
-    return (
-      <svg width= {widthFn(margin)} height={heightFn(margin)} className='basicbar shadow' >
+    return (<div>
+
+      <svg width='100%' viewBox={`0 0 ${widthFn(margin)} ${heightFn(margin)}`} preserveAspectRatio="xMinYMid meet">
         {/* formula for dgerees to rads :::->  deg * Math.PI / 180 */}
 
         <g transform={`translate(${margin.left} ,${margin.top})`}>
@@ -86,9 +86,11 @@ export class DemoBarChart extends React.Component {
           )}
 
       </svg>
+       <button onClick={this.play}>Play again</button>
+      </div>
     );
   }
-
+play=()=> {this.setState({style:Math.floor(Math.random() * this.props.chartStyles.length)})}
 
 };
 
@@ -97,7 +99,7 @@ class Bar extends React.Component {
 
   componentDidMount() { 
 
-   // Manipulae the dom to achieve animaion via d3 transition
+   // Manipulate the dom to achieve animaion via d3 transition
    this.update();    
    }
 
@@ -109,17 +111,9 @@ class Bar extends React.Component {
   }
 
  update =()=> {
-    //: animation http://duspviz.mit.edu/d3-workshop/transitions-animation/
-    // https://swizec.com/blog/using-d3js-transitions-in-react/swizec/6797
-    // dash board http://bl.ocks.org/diethardsteiner/3287802
-    // Furher research in animation hooks for react
-
-     // this.colorScale = d3.interpolateHsl(d3.rgb(this.props.chartStyles[this.props.style][1][1]), d3.rgb(this.props.chartStyles[this.props.style][1][2]));
-     // TODO : Masking using clip path https://css-tricks.com/almanac/properties/c/clip/https://jsfiddle.net/2wu0dwrL/  ------ http://www.d3noob.org/2015/07/clipped-paths-in-d3js-aka-clippath.html
-
+    // Pick a the colour range scheme defined in the  chartstyles array.
      var {0:color1,1:color2,2:interval}=this.props.chartStyles[this.props.style][1]
     
-   
      this.colorScale = d3.interpolateHsl(d3.rgb(color1), d3.rgb(color2));
 
      var bar=d3.select(this.refs.bar).data([this.props.value])
@@ -132,27 +126,13 @@ class Bar extends React.Component {
            .attr("height", 210 - this.props.yScale(this.props.value.value))
            .attr("y", this.props.yScale(this.props.value.value));
 
-            // easeBounce
-            // easeLinear
-            // easeSin
-            // easeQuad
-            // easeCubic
-            // easePoly
-            // easeCircle
-            // easeExp
-            // easeBack
-            //ie  .transition().ease(d3.easeSin) 
-
  }
 
 
   render = () => {
     let {xScale,yScale, value} = this.props
     let {arcSize, fill, innerRadius = 0, outerRadius,startAngle=0} = this.props;
-    // https://github.com/d3/d3/wiki/SVG-Shapes#arc
-    // for alice settings see http://d3indepth.com/shapes/#arc-generator
-    // can add the following to make prettier .padAngle(.02) .padRadius(100) .cornerRadius(4);
-    // d3.selectAll(this.refs.bar).remove();
+   
 
     return (
       <rect ref='bar' className='bar'
@@ -206,78 +186,14 @@ class Bar extends React.Component {
         ['lightblue',['#00ff11','#fbff00',0.25],'gold','green','blue'],
         ['green',['#0a4c6b','#0084ff',0.05],'gold','green','blue'],
         ['green',['#ffcc00','#9dff00',0.05],'gold','green','blue'],
-        ['green',['#ffd500','#ff8c00',0.05],'gold','green','blue']
+        ['green',['#ffd500','#ff8c00',0.05],'gold','green','blue'],
+        ['orange',['#F6511D','rgb(255, 192, 0)',0.05],'gold','green','blue'],
+        ['green',['#0084ff','#0a4c6b',0.05],'gold','green','blue'],
+         
+
+        
       ],
-      data: [
-       {
-         "date": "2013-01",
-         "value": "53"
-       },
-       {
-         "date": "2013-02",
-         "value": "165"
-       },
-       {
-         "date": "2013-03",
-         "value": "269"
-       },
-       {
-         "date": "2013-01",
-         "value": "53"
-       },
-       {
-         "date": "2013-02",
-         "value": "165"
-       },
-       {
-         "date": "2013-03",
-         "value": "269"
-       },
-       {
-         "date": "2013-04",
-         "value": "344"
-       },
-       {
-         "date": "2013-05",
-         "value": "376"
-       },
-       {
-         "date": "2013-06",
-         "value": "410"
-       },
-       {
-         "date": "2013-07",
-         "value": "421"
-       },
-       {
-         "date": "2013-08",
-         "value": "405"
-       },
-       {
-         "date": "2013-09",
-         "value": "376"
-       },
-       {
-         "date": "2013-10",
-         "value": "359"
-       },
-       {
-         "date": "2013-11",
-         "value": "392"
-       },
-       {
-         "date": "2013-12",
-         "value": "433"
-       },
-       {
-         "date": "2014-01",
-         "value": "455"
-       },
-       {
-         "date": "2014-02",
-         "value": "478"
-       }
-      ]
+      data: chartDefaults().data
            
 
 
