@@ -4,10 +4,8 @@ import PropTypes from 'prop-types';
 import * as d3 from "d3";
 import flagPng from './flag.png';
 import flagPng2 from './flag2.png';
+import chartDefaults from '../charts/utils/simpleChartDefaults'
 
-//http://bl.ocks.org/d3noob/8952219
-//https://plnkr.co/edit/WjmCzZ?p=preview
-//C:\Temp\react-d3-current-28-01-2018\src
 export class SingleBarChart extends React.Component {   
 
  render = () => {
@@ -67,16 +65,10 @@ export class SingleBarChart extends React.Component {
 
 };
 
-
 class Bar extends React.Component {
 
   componentDidMount() { 
-        // can initiate animation here
-
-            //     bar.transition()
-            // .duration(animationDuration)
-            // .attr("y", 0)
-            // .attr("height", height);
+        // initiate animation here
 
    var bar=d3.select(this.refs.bar).data([this.props.value])
                        .attr('y',500)
@@ -86,19 +78,12 @@ class Bar extends React.Component {
            .duration(3000).delay(1000)
            .attr("height", 500 - this.props.yScale(this.props.value.value))
            .attr("y", this.props.yScale(this.props.value.value));
-
-           // TODO info graphics : turn data value  into array of value size then draw image
-           // ie coins for evry unit into array then var N = 10;  Array.apply(null, {length: N}).map(Number.call, Number)
-           // Charts using grid : https://codepen.io/robinrendle/pen/470df4328fc964a0fc358395105d2a
              
    }
 
   render = () => {
     let {xScale,yScale, value} = this.props
     let {arcSize, fill, innerRadius = 0, outerRadius,startAngle=0} = this.props;
-    // https://github.com/d3/d3/wiki/SVG-Shapes#arc
-    // for alice settings see http://d3indepth.com/shapes/#arc-generator
-    // can add the following to make prettier .padAngle(.02) .padRadius(100) .cornerRadius(4);
 
     return (
       <rect ref='bar'
@@ -148,76 +133,7 @@ class Bar extends React.Component {
       color: d3.schemeCategory10,
       parseDate: (date) => {return d3.timeParse("%Y-%m").parse},
 
-      data: [
-       {
-         "date": "2013-01",
-         "value": "53"
-       },
-       {
-         "date": "2013-02",
-         "value": "165"
-       },
-       {
-         "date": "2013-03",
-         "value": "269"
-       },
-       {
-         "date": "2013-01",
-         "value": "53"
-       },
-       {
-         "date": "2013-02",
-         "value": "165"
-       },
-       {
-         "date": "2013-03",
-         "value": "269"
-       },
-       {
-         "date": "2013-04",
-         "value": "344"
-       },
-       {
-         "date": "2013-05",
-         "value": "376"
-       },
-       {
-         "date": "2013-06",
-         "value": "410"
-       },
-       {
-         "date": "2013-07",
-         "value": "421"
-       },
-       {
-         "date": "2013-08",
-         "value": "405"
-       },
-       {
-         "date": "2013-09",
-         "value": "376"
-       },
-       {
-         "date": "2013-10",
-         "value": "359"
-       },
-       {
-         "date": "2013-11",
-         "value": "392"
-       },
-       {
-         "date": "2013-12",
-         "value": "433"
-       },
-       {
-         "date": "2014-01",
-         "value": "455"
-       },
-       {
-         "date": "2014-02",
-         "value": "478"
-       }
-      ]
+      data: chartDefaults().data
            
 
 

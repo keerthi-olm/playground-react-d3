@@ -2,7 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import * as d3 from "d3";
-import svgCoinData from '../charts/utils/coinsData'
+import svgCoinData from '../charts/utils/coinsData';
+import infoChartDefaults from '../charts/utils/infoChartDefaults';
 
 
 export class InfoGraphicsChart extends React.Component {   
@@ -29,7 +30,7 @@ export class InfoGraphicsChart extends React.Component {
      // yScale.domain([0, d3.max(data, function(d) { return d.value; })]);
     yScale.domain(domain); // Function to map domain to scale.
     return (
-      <svg width= {widthFn(margin)} height={heightFn(margin)+100} >
+      <svg  width='100%' viewBox={`0 0 ${widthFn(margin)} ${heightFn(margin)+100}`} preserveAspectRatio="xMinYMid meet">
         {/* formula for dgerees to rads :::->  deg * Math.PI / 180 */}
 
         <g transform={`translate(${margin.left} ,${margin.top})`}>
@@ -106,7 +107,7 @@ class InfoGraphic extends React.Component {
   }
 
   coinsData (width,height,top) {  
-      // Return the coin pices to onstruct the coin stack
+      // Return the coin pieces to onstruct the coin stack. Ie is this a top piece or bottom peice?
       if (top) {
         return ( svgCoinData().top )
       } else
@@ -147,45 +148,7 @@ InfoGraphicsChart.defaultProps = {
       color: d3.schemeCategory10,
       parseDate: (date) => {return d3.timeParse("%Y-%m").parse},
 
-      data: [
-       {
-         "date": "2013-01",
-         "value": "2"
-       },
-       {
-         "date": "2013-02",
-         "value": "5"
-       },
-       {
-         "date": "2013-03",
-         "value": "10"
-       },
-       {
-         "date": "2013-04",
-         "value": "19"
-       },
-       {
-         "date": "2013-05",
-         "value": "16"
-       },
-       {
-         "date": "2013-06",
-         "value": "12"
-       },
-       {
-         "date": "2013-07",
-         "value": "11"
-       },
-       {
-         "date": "2013-08",
-         "value": "13"
-       },
-       {
-         "date": "2013-09",
-         "value": "3"
-       },
-      
-      ]
+      data: infoChartDefaults().data
         }
 export default InfoGraphicsChart;
 
