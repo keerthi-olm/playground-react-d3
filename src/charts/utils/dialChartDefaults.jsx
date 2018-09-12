@@ -24,7 +24,7 @@ defaultProps :{
             majorTicks: 5,
             labelInset: 10,
             value:6,
-            scale:d3.scaleLinear().range([0, 1]).domain([0, 10]),
+            scale:d3.scaleLinear().range([0, 1]).domain([0, 100]),
             needleConf:      {
                                 ringInset: 20,
                                 needleWidth: 15,
@@ -38,7 +38,7 @@ defaultProps :{
                                 innerRadius:20,
                                 outerRadius:100
                               },
-            data: [16,16,16,16,16,16 ]
+            data: [4,8,13,15,18,30,40 ]
 
 
     }

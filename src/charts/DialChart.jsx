@@ -49,7 +49,7 @@ class Pie extends React.Component {
   constructor (props) {
     super(props);
     //Color range for pie slices
-    this.colorScale = d3.interpolateHsl(d3.rgb('#00ff11'), d3.rgb('#fbff00'))
+    this.colorScale = d3.interpolateHsl(d3.rgb('#00ff11'), d3.rgb('#ff0000'))
      //this.colorScale = d3.interpolateHsl(d3.rgb('#e8e2ca'), d3.rgb('#3e6c0a'));
      let minViewportSize = Math.min(this.props.conf.width, this.props.conf.height);// move up
 
@@ -61,13 +61,13 @@ class Pie extends React.Component {
     let {x, y, data} = this.props;
     // https://github.com/d3/d3/wiki/Pie-Layout
     // Set piechart start and end angles ie full donut, half donut or quater donut.
-    let pie = d3.pie().startAngle(-0.5 * Math.PI).endAngle(0.5 * Math.PI);  // toDo :Replace angles with start/end variables
+    let pie = d3.pie().startAngle(0.5 * Math.PI).endAngle(-0.5 * Math.PI);  // toDo :Replace angles with start/end variables
     return (
       <g transform={`translate(${x}, ${y})`}>
         {pie(data).map( /* Render a slice for each data point */
                       (value, i ) => <Slice key={i}
                                value={value}
-                               fill={this.colorScale(0.40*i)}
+                               fill={this.colorScale(0.15*i)}
                                 innerRadius={this.props.conf.innerRadius}
                                 outerRadius={this.outerRadius}  />
           )}
@@ -85,7 +85,7 @@ class Slice extends React.Component {
             .transition()
             .duration(2000)
             .attrTween("d", function (d) { 
-                var start = {startAngle: (-0.5 * Math.PI), endAngle: (0.5 * Math.PI)};
+                var start = {startAngle: (0.5 * Math.PI), endAngle: (-0.5 * Math.PI)};
                //  var start = {startAngle: 0 , endAngle: 0}; // Play around with start and end angles 0 0 strats at top
                 var interpolate = d3.interpolate(start, d);
                 return function (t) {
@@ -130,7 +130,7 @@ class Pointer extends React.Component {
   shouldComponentUpdate = (nextProps, nextState, nextContext) => {
     // Only render if value has changed
     if(nextState.value !== this.state.value) {
-        this.update(nextState.value,this.state.value);
+        this.update(nextState.value,this.state.value);console.log(nextState.value);
         return false
     } else if (nextState.value === this.state.value) return false
 
@@ -138,7 +138,7 @@ class Pointer extends React.Component {
   }
   
     // every few seconds update reading values
-  componentDidMount() {
+  componentDidMount() { 
     const gauge = d3.select(this.refs.g);
      // move up
     gauge.data([this.line])
@@ -147,7 +147,8 @@ class Pointer extends React.Component {
                             .style("fill", 'red')
                             .style("stroke", "red").style('stroke-linejoin',"round").append('path').attr('d', this.pointerLine);
    this.update(this.state.value);
-   this.interval = setInterval(() => {this.setState({value:-20});}, 7000);
+   this.interval = setInterval(() => {this.setState({value:Math.floor(Math.random() * 100)});}, 7000);
+
   }
 
  update =(value,oldValue=5)=> {
