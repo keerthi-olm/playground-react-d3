@@ -11,12 +11,9 @@ defaultProps :{
             radius:100,
             innerRadius:100,
             pi:PropTypes.number,
-            chartId: 'halfPie_chart',
+            chartId: 'dialChart_chart',
             color: d3.schemeCategory10,
             outerRadius:200,
-            pi:PropTypes.number,
-            chartId: 'halfPie_chart',
-            color: d3.schemeCategory10,
             minValue : 0,
             maxValue: 10,
             minAngle: -90,
@@ -38,7 +35,7 @@ defaultProps :{
                                 innerRadius:20,
                                 outerRadius:100
                               },
-            data: [4,8,13,15,18,30,40 ]
+            data: [4,6,8,10,18,30,40 ]
 
 
     }

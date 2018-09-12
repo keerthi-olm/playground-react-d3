@@ -157,7 +157,7 @@ class Bar extends React.Component {
       height:PropTypes.func,
       // xScale:PropTypes.func,
       // yScale:PropTypes.func,
-      color:PropTypes.func,
+      color:PropTypes.array,
       chartStyles:PropTypes.array,
       data:PropTypes.array
 

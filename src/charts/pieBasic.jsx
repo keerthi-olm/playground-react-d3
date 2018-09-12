@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import * as d3 from "d3";
 
@@ -132,16 +131,14 @@ class Slice extends React.Component {
         height:PropTypes.number,
         radius:PropTypes.number,
         innerRadius:PropTypes.number,
-        pi:PropTypes.number,
+        pi:PropTypes.func,
         chartId:PropTypes.string,
-        color:PropTypes.func,
+        color:PropTypes.array,
         width:PropTypes.number,
         height:PropTypes.number,
         radius:PropTypes.number,
         innerRadius:PropTypes.number,
-        pi:PropTypes.number,
         chartId:PropTypes.string,
-        color:PropTypes.func,
         minValue :PropTypes.number,
         maxValue: PropTypes.number,
         minAngle: PropTypes.number,

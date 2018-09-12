@@ -42,7 +42,7 @@ export class InfoGraphicsChart extends React.Component {
                    value={value}
                xScale={xScale}
                yScale={yScale}
-               fill={this.colorScale(0.05*1) } />
+               fill={this.colorScale(0.05*1) } key={i} />
           )}
       </svg>
     );
@@ -65,7 +65,7 @@ class Bar extends React.Component {
           height={0}
           xScale={xScale}
           yScale={yScale}
-          value={value} />
+          value={value} key={this.props.i} />
                 
         );
       }
@@ -82,7 +82,7 @@ class InfoGraphic extends React.Component {
     var width,height;
     var svgTags=this.svgStack(width=this.props.xScale.bandwidth(this.props.value.date),height=this.props.yScale.bandwidth(this.props.value.value));
 
-    return (<svg>{svgTags}</svg>)
+    return (<svg key={this.props.i} >{svgTags}</svg>)
 
   }
   svgStack (width,height) { 
@@ -100,7 +100,7 @@ class InfoGraphic extends React.Component {
         if (i=== this.props.value.value) { top=1,height=135}
           //ToDO: Viewbox dimensions needs to be created dynamically.
           top===1 ?  vb = "0 0 185.41946 38.4993" : vb = "0 0 185.41946 38.4993" ;
-        buffer.push(<svg x={this.props.xScale(this.props.value.date)} width={width} height={height} viewBox={vb} y={(260-height)-this.props.yScale(i)} > {this.coinsData(width,height,top)}</svg>);
+        buffer.push(<svg key={this.props.i} x={this.props.xScale(this.props.value.date)} width={width} height={height} viewBox={vb} y={(260-height)-this.props.yScale(i)} > {this.coinsData(width,height,top)}</svg>);
 
     };
     return buffer
@@ -129,7 +129,7 @@ InfoGraphicsChart.propTypes = {
       height:PropTypes.func,
       xScale:PropTypes.func,
       yScale:PropTypes.func,
-      color:PropTypes.func,
+      color:PropTypes.array,
       data:PropTypes.array
 }
     // use shape ie : 

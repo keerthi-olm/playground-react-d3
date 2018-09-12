@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import * as d3 from "d3";
 import flagPng from './flag.png';
@@ -9,7 +8,7 @@ import chartDefaults from '../charts/utils/simpleChartDefaults'
 export class SingleBarChart extends React.Component {   
 
  render = () => {
-    var {widthFn,heightFn,margin,radius,innerRadius,arcSizeInAngle,parseDate,xScale,yScale,data} = this.props;
+    var {widthFn,heightFn,margin,parseDate,xScale,yScale,data} = this.props;
     this.colorScale = d3.interpolateHsl(d3.rgb('#e8e2ca'), d3.rgb('#3e6c0a'));
     var parseDate = d3.timeParse("%Y-%m");
         data.forEach(function(d) {
@@ -52,7 +51,7 @@ export class SingleBarChart extends React.Component {
                    value={value}
                xScale={xScale}
                yScale={yScale}
-               fill={this.colorScale(0.05*1)} />
+               fill={this.colorScale(0.05*1) } key={i} />
           )}
                   </clipPath>
         </defs>
@@ -102,13 +101,12 @@ class Bar extends React.Component {
     SingleBarChart.propTypes = {
       width:PropTypes.number,
       height:PropTypes.number,
-      radius:PropTypes.number,
       margin:PropTypes.object,
       width:PropTypes.func,
       height:PropTypes.func,
       xScale:PropTypes.func,
       yScale:PropTypes.func,
-      color:PropTypes.func,
+      color:PropTypes.array,
 
 
       data:PropTypes.array
