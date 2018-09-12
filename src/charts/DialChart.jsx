@@ -14,7 +14,7 @@ import DialChartDeafults from '../charts/utils/dialChartDefaults'
 export class DialChart extends React.Component {   
   constructor(props) {
     super();
-
+   this.state = {value: 50};
     this.needleHeadLength = Math.round(this.r * props.needleHeadLengthPercent);
 
  }
@@ -32,16 +32,18 @@ export class DialChart extends React.Component {
     let x = width / 2;
     let y = height / 2;
 
-    return (
-      <svg width= {width} height={height}>
+    return (<div>
+      <svg  viewBox={`0 0 ${width} ${height/2+30}`} preserveAspectRatio="xMinYMid meet">
         {/* We'll create this component in a minute */}
         <Pie x={x} y={y} radius={radius} data={this.props.data} conf={this.props}/>
-       <Pointer value={this.props.value} scale={this.props.scale} conf={this.props.needleConf} pieWidth={width} pieHeight={height}/>
+       <Pointer value={this.state.value} scale={this.props.scale} conf={this.props.needleConf} pieWidth={width} pieHeight={height}/>
       </svg>
+      <button onClick={this.play}>Play again</button>
+      </div>
     );
   }
-
-
+  play=()=> {this.setState({value:20});}
+ 
 };
 
 class Pie extends React.Component {
@@ -125,7 +127,9 @@ class Pointer extends React.Component {
 
     this.pointerLine=d3.line();
   }
-
+componentWillReceiveProps({someProp}) {
+  this.setState({value:this.props.value});
+}
   shouldComponentUpdate = (nextProps, nextState, nextContext) => {
     // Only render if value has changed
     if(nextState.value !== this.state.value) {
@@ -146,7 +150,7 @@ class Pointer extends React.Component {
                             .style("fill", 'red')
                             .style("stroke", "red").style('stroke-linejoin',"round").append('path').attr('d', this.pointerLine);
    this.update(this.state.value);
-   this.interval = setInterval(() => {this.setState({value:Math.floor(Math.random() * 100)});}, 7000);
+   // this.interval = setInterval(() => {this.setState({value:Math.floor(Math.random() * 100)});}, 7000);
 
   }
 
