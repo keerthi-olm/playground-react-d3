@@ -14,16 +14,16 @@ import DialChartDeafults from '../charts/utils/dialChartDefaults'
 export class DialChart extends React.Component {   
   constructor(props) {
     super();
-   this.state = {value: 50};
-    this.needleHeadLength = Math.round(this.r * props.needleHeadLengthPercent);
+   this.state = {...props,value: 50};
+    this.needleHeadLength = Math.round(this.r * this.state.needleHeadLengthPercent);
 
  }
 
  render = () => {
     // For a real world project, use something like
     // https://github.com/digidem/react-dimensions
-    let width = this.props.width;
-    let height = this.props.height;
+    let width = this.state.width;
+    let height = this.state.height;
     let minViewportSize = Math.min(width, height);
     // This sets the radius of the pie chart to fit within
     // the current window size, with some additional padding
@@ -35,14 +35,14 @@ export class DialChart extends React.Component {
     return (<div>
       <svg  viewBox={`0 0 ${width} ${height/2+30}`} preserveAspectRatio="xMinYMid meet">
         {/* We'll create this component in a minute */}
-        <Pie x={x} y={y} radius={radius} data={this.props.data} conf={this.props}/>
-       <Pointer value={this.state.value} scale={this.props.scale} conf={this.props.needleConf} pieWidth={width} pieHeight={height}/>
+        <Pie x={x} y={y} radius={radius} data={this.state.data} conf={this.props}/>
+       <Pointer value={this.state.value} scale={this.state.scale} conf={this.state.needleConf} pieWidth={width} pieHeight={height}/>
       </svg>
       <button onClick={this.play}>Play again</button>
       </div>
     );
   }
-  play=()=> {this.setState({value:20});}
+  play=()=> {this.setState({...this.state,value:Math.floor(Math.random() * 100)})}
  
 };
 
@@ -57,7 +57,9 @@ class Pie extends React.Component {
      this.outerRadius = (minViewportSize * .9) / 2;// move up
 
   }
-
+shouldComponentUpdate() { // can add a check if data has changed here. Have assumed no data change  
+  return false // Forces component TO BY PASS Render
+}
   render = () => {
     let {x, y, data} = this.props;
     // https://github.com/d3/d3/wiki/Pie-Layout
@@ -95,6 +97,7 @@ class Slice extends React.Component {
             });
 
    }
+
 
   render = () => {
     let {value, fill, innerRadius = 0, outerRadius} = this.props;
