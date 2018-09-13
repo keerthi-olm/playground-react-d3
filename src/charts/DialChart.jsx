@@ -168,9 +168,9 @@ componentWillReceiveProps({someProp}) {
     //Tween animation between two angles  
     const g = d3.select(this.refs.g.childNodes[0]);
                 g.transition().duration(7000).attrTween("transform", function
-                  (interpolate) {
+                  (interpolate) {console.log(d3.interpolateString("rotate(" + (oldAngle)+")", "rotate(" + newAngle + ")"));
          return d3.interpolateString("rotate(" + (oldAngle)+")", "rotate(" + newAngle + ")");
-    });
+    }).on("start", function() {/* console.log('animi started')*/}).on("end", function() {/*console.log('Animi ended')*/}).on("interrupt", function() {/*console.log(this)*/});
         
   }
   getAngle = (value,scale)=>{ //move up
