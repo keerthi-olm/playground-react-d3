@@ -14,7 +14,7 @@ import DialChartDeafults from '../charts/utils/dialChartDefaults'
 export class DialChart extends React.Component {   
   constructor(props) {
     super();
-   this.state = {...props,value: 50};
+   this.state = {data:[...props.data],value: 50};
     this.needleHeadLength = Math.round(this.r * this.state.needleHeadLengthPercent);
 
  }
@@ -22,8 +22,8 @@ export class DialChart extends React.Component {
  render = () => {
     // For a real world project, use something like
     // https://github.com/digidem/react-dimensions
-    let width = this.state.width;
-    let height = this.state.height;
+    let width = this.props.width;
+    let height = this.props.height;
     let minViewportSize = Math.min(width, height);
     // This sets the radius of the pie chart to fit within
     // the current window size, with some additional padding
@@ -36,7 +36,7 @@ export class DialChart extends React.Component {
       <svg  viewBox={`0 0 ${width} ${height/2+30}`} preserveAspectRatio="xMinYMid meet">
         {/* We'll create this component in a minute */}
         <Pie x={x} y={y} radius={radius} data={this.state.data} conf={this.props}/>
-       <Pointer value={this.state.value} scale={this.state.scale} conf={this.state.needleConf} pieWidth={width} pieHeight={height}/>
+       <Pointer value={this.state.value} scale={this.props.scale} conf={this.props.needleConf} pieWidth={width} pieHeight={height}/>
       </svg>
       <button onClick={this.play}>Play again</button>
       </div>
@@ -57,10 +57,9 @@ class Pie extends React.Component {
      this.outerRadius = (minViewportSize * .9) / 2;// move up
 
   }
-shouldComponentUpdate() { // can add a check if data has changed here. Have assumed no data change  
-  return false // Forces component TO BY PASS Render
-}
+
   render = () => {
+
     let {x, y, data} = this.props;
     // https://github.com/d3/d3/wiki/Pie-Layout
     // Set piechart start and end angles ie full donut, half donut or quater donut.
@@ -97,9 +96,15 @@ class Slice extends React.Component {
             });
 
    }
+ componentDidUpdate() { 
+         let arc = d3.arc().innerRadius(this.props.innerRadius).outerRadius(this.props.outerRadius);
 
+         var path = d3.select(this.refs.path).data([this.props.value]).attr('d',arc(this.props.value));
+            
+   }
 
   render = () => {
+     
     let {value, fill, innerRadius = 0, outerRadius} = this.props;
     let arc = d3.arc().innerRadius(this.props.innerRadius).outerRadius(this.props.outerRadius)
   
@@ -136,7 +141,7 @@ componentWillReceiveProps({someProp}) {
   shouldComponentUpdate = (nextProps, nextState, nextContext) => {
     // Only render if value has changed
     if(nextState.value !== this.state.value) {
-        this.update(nextState.value,this.state.value);console.log(nextState.value);
+        this.update(nextState.value,this.state.value);
         return false
     } else if (nextState.value === this.state.value) return false
 
@@ -168,7 +173,7 @@ componentWillReceiveProps({someProp}) {
     //Tween animation between two angles  
     const g = d3.select(this.refs.g.childNodes[0]);
                 g.transition().duration(7000).attrTween("transform", function
-                  (interpolate) {console.log(d3.interpolateString("rotate(" + (oldAngle)+")", "rotate(" + newAngle + ")"));
+                  (interpolate) {
          return d3.interpolateString("rotate(" + (oldAngle)+")", "rotate(" + newAngle + ")");
     }).on("start", function() {/* console.log('animi started')*/}).on("end", function() {/*console.log('Animi ended')*/}).on("interrupt", function() {/*console.log(this)*/});
         
