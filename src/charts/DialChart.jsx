@@ -14,7 +14,7 @@ import DialChartDeafults from '../charts/utils/dialChartDefaults'
 export class DialChart extends React.Component {   
   constructor(props) {
     super();
-   this.state = {data:[...props.data],value: 50};
+   this.state = {data:[...props.data],value: 50,country:0};
     this.needleHeadLength = Math.round(this.r * this.state.needleHeadLengthPercent);
 
  }
@@ -35,14 +35,20 @@ export class DialChart extends React.Component {
     return (<div>
       <svg  viewBox={`0 0 ${width} ${height/2+30}`} preserveAspectRatio="xMinYMid meet">
         {/* We'll create this component in a minute */}
-        <Pie x={x} y={y} radius={radius} data={this.state.data} conf={this.props}/>
+        <Pie className='dial' x={x} y={y} radius={radius} data={this.state.data} conf={this.props} plainShape='false'/>
        <Pointer value={this.state.value} scale={this.props.scale} conf={this.props.needleConf} pieWidth={width} pieHeight={height}/>
+        <Pie className='dialPanel' x={x} y={y} radius={radius} data={[10]} conf={this.props} plainShape='true'/>
+<g transform={'translate(25,250)'} className='dialPanel'>
+<rect width="450" height="100" /> 
+<text x="0" y="30" font-family="Verdana" font-size="35" fill="white">{this.props.forecast[this.state.country]}{this.state.value}</text>
+
+</g>
       </svg>
       <button onClick={this.play}>Play again</button>
       </div>
     );
   }
-  play=()=> {this.setState({...this.state,value:Math.floor(Math.random() * 100)})}
+  play=()=> {this.setState({...this.state,value:Math.floor(Math.random() * 100),country:Math.floor(Math.random() * 7)})}
  
 };
 
@@ -65,15 +71,17 @@ class Pie extends React.Component {
     // Set piechart start and end angles ie full donut, half donut or quater donut.
     let pie = d3.pie().startAngle(0.5 * Math.PI).endAngle(-0.5 * Math.PI);  // toDo :Replace angles with start/end variables
     return (
-      <g transform={`translate(${x}, ${y})`}>
+      <g transform={`translate(${x}, ${y})`} className={this.props.className}>
         {pie(data).map( /* Render a slice for each data point */
                       (value, i ) => <Slice key={i}
                                value={value}
-                               fill={this.colorScale(0.15*i)}
-                                innerRadius={this.props.conf.innerRadius}
-                                outerRadius={this.outerRadius}  />
+                               fill={this.props.plainShape==='false' ? this.colorScale(0.15*i) : ''}
+                                innerRadius={this.props.plainShape==='false' ? this.props.conf.innerRadius : 0}
+                                outerRadius={this.props.plainShape==='false' ? this.outerRadius : this.props.conf.innerRadius   }  />
           )}
-      </g>
+
+          </g>
+
     );
   }
 
@@ -109,7 +117,7 @@ class Slice extends React.Component {
     let arc = d3.arc().innerRadius(this.props.innerRadius).outerRadius(this.props.outerRadius)
   
     return (
-      <path ref='path' d={[]} fill={fill} stroke='white' />
+      <path ref='path' d={[]} fill={fill}  />
     );
   }
 }
@@ -135,8 +143,8 @@ class Pointer extends React.Component {
 
     this.pointerLine=d3.line();
   }
-componentWillReceiveProps({someProp}) {
-  this.setState({value:this.props.value});
+componentWillReceiveProps({value}) {
+  this.setState({value:value});
 }
   shouldComponentUpdate = (nextProps, nextState, nextContext) => {
     // Only render if value has changed

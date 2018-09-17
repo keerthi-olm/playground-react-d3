@@ -9,7 +9,7 @@ defaultProps :{
             width: 500,
             height: 500,
             radius:100,
-            innerRadius:100,
+            innerRadius:215,
             pi:PropTypes.number,
             chartId: 'dialChart_chart',
             color: d3.schemeCategory10,
@@ -35,7 +35,9 @@ defaultProps :{
                                 innerRadius:20,
                                 outerRadius:100
                               },
-            data: [4,6,8,10,18,30,40 ]
+            data: [4,6,8,10,18,30,40 ],
+            forecast:['london','sweden','france','holland','spain','brazil','mexico']
+            
 
 
     }

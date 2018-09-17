@@ -199,3 +199,8 @@ button:focus {
     outline: none;
    
 }
+
+/** Dial chart **/
+
+.dialBase,.dialPanel {fill:black;opacity:0.5;}
+.dialPanel {fill:black;}
