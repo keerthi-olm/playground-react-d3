@@ -350,7 +350,8 @@ class ReactSpeedometer extends React.Component {
                 // ref: https://stackoverflow.com/a/29771751/1410291
                 function assemble(literal, params) {
                     // ref: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function
-                    return new Function(params, "return `"+literal+"`;");
+                    let newValue= "return '"+literal+"';";
+                    return new Function(params, newValue);
                 }
                 var template = assemble(config.currentValueText, "value");
                 return template(value);

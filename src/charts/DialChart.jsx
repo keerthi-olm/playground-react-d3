@@ -20,8 +20,7 @@ export class DialChart extends React.Component {
  }
 
  render = () => {
-    // For a real world project, use something like
-    // https://github.com/digidem/react-dimensions
+
     let width = this.props.width;
     let height = this.props.height;
     let minViewportSize = Math.min(width, height);
@@ -33,21 +32,23 @@ export class DialChart extends React.Component {
     let y = height / 2;
 
     return (<div>
-      <svg  viewBox={`0 0 ${width} ${height/2+30}`} preserveAspectRatio="xMinYMid meet">
+      <svg  width='100%' className='dialChart' viewBox={`0 0 ${width} ${height/2+30}`} preserveAspectRatio="xMinYMid meet">
         {/* We'll create this component in a minute */}
         <Pie className='dial' x={x} y={y} radius={radius} data={this.state.data} conf={this.props} plainShape='false'/>
-       <Pointer value={this.state.value} scale={this.props.scale} conf={this.props.needleConf} pieWidth={width} pieHeight={height}/>
+        <Pointer value={this.state.value} scale={this.props.scale} conf={this.props.needleConf} pieWidth={width} pieHeight={height}/>
         <Pie className='dialPanel' x={x} y={y} radius={radius} data={[10]} conf={this.props} plainShape='true'/>
-<g transform={'translate(25,250)'} className='dialPanel'>
-<rect width="450" height="100" /> 
-<text x="0" y="30" font-family="Verdana" font-size="35" fill="white">{this.props.forecast[this.state.country]}{this.state.value}</text>
-
-</g>
+        <g transform={'translate(25,250)'} className='dialPanel'>
+        <rect x="0" y="0" width="100%" height="100" ></rect>
+        </g>
+        <g transform={'translate(25,250)'} >
+        <text x="220" y="25" width='100%' text-anchor='middle' font-family="Verdana" font-size="20" fill="white">{this.props.forecast[this.state.country]} : {this.state.value} &deg;C</text>
+        </g>
       </svg>
       <button onClick={this.play}>Play again</button>
       </div>
     );
   }
+  
   play=()=> {this.setState({...this.state,value:Math.floor(Math.random() * 100),country:Math.floor(Math.random() * 7)})}
  
 };
@@ -96,7 +97,7 @@ class Slice extends React.Component {
             .duration(2000)
             .attrTween("d", function (d) { 
                 var start = {startAngle: (0.5 * Math.PI), endAngle: (-0.5 * Math.PI)};
-               //  var start = {startAngle: 0 , endAngle: 0}; // Play around with start and end angles 0 0 strats at top
+               //  var start = {startAngle: 0 , endAngle: 0}; // Play around with start and end angles 0 0 starts at top
                 var interpolate = d3.interpolate(start, d);
                 return function (t) {
                     return arc(interpolate(t));
@@ -166,7 +167,7 @@ componentWillReceiveProps({value}) {
                             .style("fill", 'red')
                             .style("stroke", "red").style('stroke-linejoin',"round").append('path').attr('d', this.pointerLine);
    this.update(this.state.value);
-   // this.interval = setInterval(() => {this.setState({value:Math.floor(Math.random() * 100)});}, 7000);
+ 
 
   }
 

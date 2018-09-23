@@ -202,5 +202,6 @@ button:focus {
 
 /** Dial chart **/
 
-.dialBase,.dialPanel {fill:black;opacity:0.5;}
-.dialPanel {fill:black;}
+.dialPanel {opacity:0.5;fill:#000;}
+.dialChart {background-color: #000}
+.dialChart text {color: #000; text-transform: capitalize;}
