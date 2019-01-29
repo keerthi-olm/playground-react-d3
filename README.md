@@ -1,4 +1,4 @@
-This project has many components that demos  d3.js charts written in react.js and is using es6. I have used D3.js for mainly the calculations and react is  used to render the views. Treat these as prove of concepts that demos the versatility of react.js to display charts and graphs in es6.
+This project displays an assortment of   d3.js charts written in react.js and is also es6. I have used D3.js for mainly the calculations and react is  used to render the views. The main goal of this project was for me to understand the flexibility of  D3.js and React.js in respect to interpreting designs, infographics and animations.  Treat these as prove of concepts.
 
 ![alt text](http://ui-design-coder.com/wp-content/uploads/2019/01/d3-charts.png)
 
